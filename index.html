@@ -294,12 +294,12 @@
       <h2 id="heroTitle"></h2>
       <p id="heroBlurb"></p>
       <div class="legend">
-        <span class="tag vf">Verdadero o falso</span>
-        <span class="tag mcq">Selección múltiple</span>
-        <span class="tag match">Unir conceptos</span>
-        <span class="tag label">Etiqueta el dibujo</span>
-        <span class="tag open">Pregunta abierta</span>
-        <span class="tag case">Caso de investigación</span>
+        <span class="tag vf" id="legVf"></span>
+        <span class="tag mcq" id="legMcq"></span>
+        <span class="tag match" id="legMatch"></span>
+        <span class="tag label" id="legLabel"></span>
+        <span class="tag open" id="legOpen"></span>
+        <span class="tag case" id="legCase"></span>
       </div>
       <div class="topiclegend" id="topicLegend"></div>
     </section>
@@ -308,11 +308,11 @@
 
     <section class="diploma" id="diploma" hidden>
       <canvas id="confetti"></canvas>
-      <h2>🏅 ¡Expedición completada!</h2>
-      <p>Respondiste las <b id="diplomaTotal">0</b> preguntas <b id="diplomaSubject">de esta materia</b>.</p>
-      <label for="explorerName" style="display:block;font-size:.8rem;color:var(--ink-soft);margin-bottom:6px;">Escribe tu nombre para tu diploma:</label>
+      <h2 id="diplomaTitle"></h2>
+      <p><span id="diplomaP1"></span> <b id="diplomaTotal">0</b> <span id="diplomaP2"></span> <b id="diplomaSubject">de esta materia</b>.</p>
+      <label for="explorerName" id="nameLabel" style="display:block;font-size:.8rem;color:var(--ink-soft);margin-bottom:6px;"></label>
       <input id="explorerName" type="text" placeholder="Tu nombre aquí" maxlength="30" />
-      <div class="cert">Certificamos que <b id="certName">___</b> es oficialmente una/un<br/><b id="certTitle">Exploradora/Explorador</b> 🏅</div>
+      <div class="cert"><span id="certBefore"></span> <b id="certName">___</b> <span id="certAfter"></span><br/><b id="certTitle">Exploradora/Explorador</b> 🏅</div>
       <button class="switchbtn" id="switchSubjectDiploma" type="button" style="margin-top:14px;">← Elegir otra materia</button>
     </section>
   </div>
@@ -328,6 +328,68 @@ function shuffle(arr){
   for(let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
   return a;
 }
+
+/* Every UI string the quiz engine shows switches to English while the
+   Inglés subject is active, so that session reads as full immersion. */
+const STR = {
+  es: {
+    badge_vf:"Verdadero o falso", badge_mcq:"Selección múltiple", badge_match:"Unir conceptos",
+    badge_label:"Etiqueta el dibujo", badge_open:"Pregunta abierta", badge_case:"Caso",
+    legend_case:"Caso de investigación",
+    context_prefix:"Caso de investigación:",
+    vf_true:"✅ Verdadero", vf_false:"❌ Falso", vf_true_word:"Verdadero", vf_false_word:"Falso",
+    fb_correct:"¡Correcto! ", fb_wrong:"Casi... ", fb_suffix:"Ya puedes ver la solución abajo.",
+    fb_match_ok:"¡Uniste todo correctamente! Ya puedes ver la solución abajo.",
+    fb_label_ok:"¡Etiquetaste todo el dibujo! Ya puedes ver la solución abajo.",
+    label_hint:"1) Toca una palabra del banco. 2) Toca el lugar del dibujo donde crees que va.",
+    sol_show:"🔍 Ver solución", sol_hide:"🙈 Ocultar solución",
+    sol_show_open:"💡 Ver solución", sol_hide_open:"🙈 Ocultar solución",
+    status_correct:"✅ CORRECTA", status_incorrect:"❌ INCORRECTA",
+    answer_prefix:"Respuesta correcta: ", answer_pairs:"Las parejas correctas son:", answer_labels:"Las etiquetas correctas son:",
+    open_placeholder_label:"Escribe aquí tu idea (mínimo 10 caracteres para desbloquear la solución)...",
+    progress:[
+      [0,"¡Apenas estamos calentando motores, sigue explorando!"],
+      [25,"¡Vas muy bien, sigue así, futura/o científica/o!"],
+      [50,"¡A mitad de camino! Tu cerebro está trabajando genial."],
+      [75,"¡Casi terminas la expedición! Un empujón más."],
+      [100,"¡Expedición completada! Lo lograste."]
+    ],
+    diploma_title:"🏅 ¡Expedición completada!",
+    diploma_p1:"Respondiste las", diploma_p2:"preguntas",
+    name_label:"Escribe tu nombre para tu diploma:", name_placeholder:"Tu nombre aquí",
+    cert_before:"Certificamos que", cert_after:"es oficialmente una/un",
+    switch_top:"← Cambiar de materia", switch_diploma:"← Elegir otra materia"
+  },
+  en: {
+    badge_vf:"True or False", badge_mcq:"Multiple choice", badge_match:"Match the concepts",
+    badge_label:"Label the picture", badge_open:"Open question", badge_case:"Case",
+    legend_case:"Investigation case",
+    context_prefix:"Investigation case:",
+    vf_true:"✅ True", vf_false:"❌ False", vf_true_word:"True", vf_false_word:"False",
+    fb_correct:"Correct! ", fb_wrong:"Almost... ", fb_suffix:"You can check the solution below.",
+    fb_match_ok:"You matched everything correctly! You can check the solution below.",
+    fb_label_ok:"You labeled the whole picture! You can check the solution below.",
+    label_hint:"1) Tap a word from the bank. 2) Tap the spot in the picture where you think it goes.",
+    sol_show:"🔍 See solution", sol_hide:"🙈 Hide solution",
+    sol_show_open:"💡 See solution", sol_hide_open:"🙈 Hide solution",
+    status_correct:"✅ CORRECT", status_incorrect:"❌ INCORRECT",
+    answer_prefix:"Correct answer: ", answer_pairs:"The correct pairs are:", answer_labels:"The correct labels are:",
+    open_placeholder_label:"Write your idea here (at least 10 characters to unlock the solution)...",
+    progress:[
+      [0,"We're just warming up, keep exploring!"],
+      [25,"You're doing great, keep going, future explorer!"],
+      [50,"Halfway there! Your brain is working great."],
+      [75,"Almost done with the expedition! One more push."],
+      [100,"Expedition completed! You did it."]
+    ],
+    diploma_title:"🏅 Expedition completed!",
+    diploma_p1:"You answered", diploma_p2:"questions",
+    name_label:"Write your name for your diploma:", name_placeholder:"Your name here",
+    cert_before:"We certify that", cert_after:"is officially an",
+    switch_top:"← Change subject", switch_diploma:"← Choose another subject"
+  }
+};
+function t(key){ return STR[activeSubject==="ingles" ? "en" : "es"][key]; }
 
 const STATIONS = {
   huesos: { label:"Huesos", chip:"bone",
@@ -359,9 +421,9 @@ const SUBJECTS = {
   ingles: {
     title:"Inglés", subtitle:"English: My Day &amp; Fantastic Food",
     heroTitle:"Welcome, young explorer! 🗺️",
-    heroBlurb:"Vamos a practicar <b>Unit 6 · My Day</b> y <b>Unit 7 · Fantastic Food</b>: la hora (<i>What time...? At... o'clock</i>), las rutinas diarias, el vocabulario de comida y las oraciones con <i>some</i> y <i>any</i>. Las preguntas están <b>mezcladas</b> y cambian de orden cada vez que abres la página. Muchas son <b>casos de investigación</b> en inglés: lee el mini-texto y responde. Después de contestar cada pregunta aparece el botón <b>Ver solución</b>.",
+    heroBlurb:"Let's practice <b>Unit 6 · My Day</b> and <b>Unit 7 · Fantastic Food</b>: telling time (<i>What time...? At... o'clock</i>), daily routines, food vocabulary, and sentences with <i>some</i> and <i>any</i>. The questions are all <b>mixed together</b>, and their order changes every time you open the page. Many are <b>investigation cases</b>: read the short text and answer. After you answer each question, the <b>See solution</b> button appears (for writing questions, it unlocks once you type at least 10 letters).",
     blurb:"Unit 6 My Day y Unit 7 Fantastic Food: hora, rutinas, comida y some/any.",
-    diplomaSubject:"de inglés (Unit 6 y 7)", certTitle:"English Explorer 🇬🇧⭐",
+    diplomaSubject:"about Unit 6 and Unit 7", certTitle:"English Explorer 🇬🇧⭐",
     chip:"time",
     icon:`<svg viewBox="0 0 48 48"><rect x="6" y="10" width="36" height="28" rx="4" fill="none" stroke="var(--time)" stroke-width="3"/><path d="M6 16h36" stroke="var(--time)" stroke-width="3"/><path d="M16 22h16M16 28h10" stroke="var(--food)" stroke-width="3" stroke-linecap="round"/></svg>`
   }
@@ -928,26 +990,14 @@ function updateHeader(){
   document.getElementById("answeredTotal").textContent = total;
   const pct = total ? Math.round((answeredSet.size/total)*100) : 0;
   document.getElementById("progFill").style.width = pct+"%";
-  const msgs = [
-    [0,"¡Apenas estamos calentando motores, sigue explorando!"],
-    [25,"¡Vas muy bien, sigue así, futura/o científica/o!"],
-    [50,"¡A mitad de camino! Tu cerebro está trabajando genial."],
-    [75,"¡Casi terminas la expedición! Un empujón más."],
-    [100,"¡Expedición completada! Lo lograste."]
-  ];
+  const msgs = STR[activeSubject==="ingles" ? "en" : "es"].progress;
   let m = msgs[0][1];
-  for(const [t,text] of msgs){ if(pct>=t) m = text; }
+  for(const [threshold,text] of msgs){ if(pct>=threshold) m = text; }
   document.getElementById("progMsg").textContent = m;
   if(total>0 && answeredSet.size===total) showDiploma();
 }
 
-const BADGE = {
-  vf:{cls:"vf", label:"Verdadero o falso"},
-  mcq:{cls:"mcq", label:"Selección múltiple"},
-  match:{cls:"match", label:"Unir conceptos"},
-  label:{cls:"label", label:"Etiqueta el dibujo"},
-  open:{cls:"open", label:"Pregunta abierta"}
-};
+const BADGE_CLS = { vf:"vf", mcq:"mcq", match:"match", label:"label", open:"open" };
 
 function baseCard(q){
   const card = document.createElement("div");
@@ -959,20 +1009,20 @@ function baseCard(q){
   if(q.context){
     const ctx = document.createElement("div");
     ctx.className = "context";
-    ctx.innerHTML = `<b>Caso de investigación:</b> ${q.context}`;
+    ctx.innerHTML = `<b>${t("context_prefix")}</b> ${q.context}`;
     card.appendChild(ctx);
   }
 
   const meta = document.createElement("div");
   meta.className = "qmeta";
   const b1 = document.createElement("span");
-  b1.className = "qbadge tag "+BADGE[q.type].cls;
-  b1.textContent = BADGE[q.type].label;
+  b1.className = "qbadge tag "+BADGE_CLS[q.type];
+  b1.textContent = t("badge_"+q.type);
   meta.appendChild(b1);
   if(q.context){
     const b2 = document.createElement("span");
     b2.className = "qbadge tag case";
-    b2.textContent = "Caso";
+    b2.textContent = t("badge_case");
     meta.appendChild(b2);
   }
   const topic = document.createElement("span");
@@ -1002,22 +1052,22 @@ function showFeedback(fb, text, good){
 
 /* answer text used by the independent "ver solución" panel */
 function answerLine(q){
-  if(q.type==="vf") return "Respuesta correcta: " + (q.answer ? "Verdadero" : "Falso");
-  if(q.type==="mcq") return "Respuesta correcta: " + q.options[q.correct];
-  if(q.type==="match") return "Las parejas correctas son:";
-  if(q.type==="label") return "Las etiquetas correctas son:";
+  if(q.type==="vf") return t("answer_prefix") + (q.answer ? t("vf_true_word") : t("vf_false_word"));
+  if(q.type==="mcq") return t("answer_prefix") + q.options[q.correct];
+  if(q.type==="match") return t("answer_pairs");
+  if(q.type==="label") return t("answer_labels");
   return "";
 }
 
-/* The "Ver solución" button stays hidden until the question has been
+/* The "solution" button stays hidden until the question has been
    answered. reveal(ok) is called by each question type once the student
-   has responded, and shows a CORRECTA/INCORRECTA status before the
+   has responded, and shows a CORRECT/INCORRECT status before the
    explanation (vf/mcq/match/label only — open questions have no status). */
 function attachSolution(card, q){
   const btn = document.createElement("button");
   btn.className = "ghostbtn";
   btn.type = "button";
-  btn.textContent = "🔍 Ver solución";
+  btn.textContent = t("sol_show");
   btn.style.display = "none";
   card.appendChild(btn);
 
@@ -1036,7 +1086,7 @@ function attachSolution(card, q){
   if(q.type==="match" || q.type==="label"){
     const ul = document.createElement("ul");
     const items = q.type==="match" ? q.pairs.map(p=>p[0]+" → "+p[1]) : q.slots.map(s=>s.correct);
-    items.forEach(t=>{ const li=document.createElement("li"); li.textContent=t; ul.appendChild(li); });
+    items.forEach(txt=>{ const li=document.createElement("li"); li.textContent=txt; ul.appendChild(li); });
     box.appendChild(ul);
   }
 
@@ -1049,13 +1099,13 @@ function attachSolution(card, q){
 
   btn.addEventListener("click", ()=>{
     box.classList.toggle("show");
-    btn.textContent = box.classList.contains("show") ? "🙈 Ocultar solución" : "🔍 Ver solución";
+    btn.textContent = box.classList.contains("show") ? t("sol_hide") : t("sol_show");
   });
 
   return {
     reveal(ok){
       if(btn.style.display==="none"){
-        statusDiv.textContent = ok ? "✅ CORRECTA" : "❌ INCORRECTA";
+        statusDiv.textContent = ok ? t("status_correct") : t("status_incorrect");
         statusDiv.className = "statusline " + (ok ? "status-good" : "status-bad");
         btn.style.display = "";
         markAnswered(q.id);
@@ -1069,9 +1119,9 @@ function renderVF(q){
   const row = document.createElement("div");
   row.className = "vfrow";
   const btnT = document.createElement("button");
-  btnT.className = "vfbtn"; btnT.textContent = "✅ Verdadero";
+  btnT.className = "vfbtn"; btnT.textContent = t("vf_true");
   const btnF = document.createElement("button");
-  btnF.className = "vfbtn"; btnF.textContent = "❌ Falso";
+  btnF.className = "vfbtn"; btnF.textContent = t("vf_false");
   row.appendChild(btnT); row.appendChild(btnF);
   card.appendChild(row);
   const fb = feedbackBox(card);
@@ -1081,7 +1131,7 @@ function renderVF(q){
     [btnT,btnF].forEach(b=>b.disabled=true);
     chosenBtn.classList.add(ok?"correct":"wrong");
     if(!ok){ (q.answer? btnT:btnF).classList.add("correct"); }
-    showFeedback(fb, (ok?"¡Correcto! ":"Casi... ") + "Ya puedes ver la solución abajo.", true);
+    showFeedback(fb, (ok?t("fb_correct"):t("fb_wrong")) + t("fb_suffix"), true);
     card.classList.add("done");
     sol.reveal(ok);
   }
@@ -1112,7 +1162,7 @@ function renderMCQ(q){
       const ok = i===q.correct;
       b.classList.add(ok?"correct":"wrong");
       if(!ok) btns[q.correct].classList.add("correct");
-      showFeedback(fb, (ok?"¡Correcto! ":"Casi... ") + "Ya puedes ver la solución abajo.", true);
+      showFeedback(fb, (ok?t("fb_correct"):t("fb_wrong")) + t("fb_suffix"), true);
       card.classList.add("done");
       sol.reveal(ok);
     });
@@ -1161,7 +1211,7 @@ function renderMatch(q){
         selectedLeft = null;
         matchedCount++;
         if(matchedCount===q.pairs.length){
-          showFeedback(fb, "¡Uniste todo correctamente! Ya puedes ver la solución abajo.", true);
+          showFeedback(fb, t("fb_match_ok"), true);
           card.classList.add("done");
           sol.reveal(true);
         }
@@ -1187,7 +1237,7 @@ function renderLabel(q){
   const card = baseCard(q);
   const hint = document.createElement("div");
   hint.className = "labelhint";
-  hint.textContent = "1) Toca una palabra del banco. 2) Toca el lugar del dibujo donde crees que va.";
+  hint.textContent = t("label_hint");
   card.appendChild(hint);
 
   const stage = document.createElement("div");
@@ -1231,7 +1281,7 @@ function renderLabel(q){
         picked = null;
         filledCount++;
         if(filledCount===q.slots.length){
-          showFeedback(fb, "¡Etiquetaste todo el dibujo! Ya puedes ver la solución abajo.", true);
+          showFeedback(fb, t("fb_label_ok"), true);
           card.classList.add("done");
           sol.reveal(true);
         }
@@ -1251,12 +1301,12 @@ function renderOpen(q){
   const card = baseCard(q);
   const ta = document.createElement("textarea");
   ta.className = "opentext";
-  ta.placeholder = "Escribe aquí tu idea (mínimo 10 caracteres para desbloquear la solución)...";
+  ta.placeholder = t("open_placeholder_label");
   card.appendChild(ta);
 
   const btn = document.createElement("button");
   btn.className = "ghostbtn";
-  btn.textContent = "💡 Ver solución";
+  btn.textContent = t("sol_show_open");
   btn.style.display = "none";
   card.appendChild(btn);
 
@@ -1277,7 +1327,7 @@ function renderOpen(q){
 
   btn.addEventListener("click", ()=>{
     box.classList.toggle("show");
-    btn.textContent = box.classList.contains("show") ? "🙈 Ocultar solución" : "💡 Ver solución";
+    btn.textContent = box.classList.contains("show") ? t("sol_hide_open") : t("sol_show_open");
   });
 
   return card;
@@ -1330,6 +1380,26 @@ function startSubject(key){
   document.getElementById("heroBlurb").innerHTML = meta.heroBlurb;
   document.getElementById("diplomaSubject").textContent = meta.diplomaSubject;
   document.getElementById("certTitle").textContent = meta.certTitle;
+
+  document.getElementById("legVf").textContent = t("badge_vf");
+  document.getElementById("legMcq").textContent = t("badge_mcq");
+  document.getElementById("legMatch").textContent = t("badge_match");
+  document.getElementById("legLabel").textContent = t("badge_label");
+  document.getElementById("legOpen").textContent = t("badge_open");
+  document.getElementById("legCase").textContent = t("legend_case");
+
+  document.getElementById("switchSubject").textContent = t("switch_top");
+  document.getElementById("switchSubjectDiploma").textContent = t("switch_diploma");
+
+  document.getElementById("diplomaTitle").textContent = t("diploma_title");
+  document.getElementById("diplomaP1").textContent = t("diploma_p1");
+  document.getElementById("diplomaP2").textContent = t("diploma_p2");
+  document.getElementById("nameLabel").textContent = t("name_label");
+  document.getElementById("explorerName").placeholder = t("name_placeholder");
+  document.getElementById("explorerName").value = "";
+  document.getElementById("certBefore").textContent = t("cert_before");
+  document.getElementById("certAfter").textContent = t("cert_after");
+  document.getElementById("certName").textContent = "___";
 
   const list = document.getElementById("qlist");
   list.innerHTML = "";
