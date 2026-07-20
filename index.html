@@ -184,7 +184,12 @@
     font-size:.88rem;display:none;border-left:4px solid var(--info);
   }
   .solutionbox.show{display:block;}
+  .solutionbox .statusline{font-family:var(--display);font-size:1rem;letter-spacing:.03em;margin-bottom:8px;}
+  .solutionbox .statusline:empty{display:none;margin:0;}
+  .solutionbox .statusline.status-good{color:var(--good);}
+  .solutionbox .statusline.status-bad{color:var(--bad);}
   .solutionbox .answerline{font-weight:800;color:var(--info);margin-bottom:6px;}
+  .solutionbox .answerline:empty{display:none;}
   .solutionbox ul{margin:4px 0 0;padding-left:18px;}
 
   .context{position:relative;background:var(--chip-soft);border:2px dashed var(--chip);border-radius:16px;padding:14px 16px 14px 46px;margin:0 0 12px;font-size:.92rem;color:var(--ink);}
@@ -237,7 +242,7 @@
 
   <section class="hero">
     <h2>Bienvenido/a, joven científico/a 🔬</h2>
-    <p>Vamos a explorar tu <b>esqueleto</b> y tus <b>músculos</b>: cómo se llaman, para qué sirven y cómo trabajan juntos. Las preguntas de huesos, articulaciones y músculos están todas <b>mezcladas</b>, y su orden cambia cada vez que abres la página. Muchas son <b>casos de investigación</b>: lee la pequeña historia y usa lo que sabes para resolverla. Si te atascas, cada pregunta tiene un botón para <b>ver la solución</b>.</p>
+    <p>Vamos a explorar tu <b>esqueleto</b> y tus <b>músculos</b>: cómo se llaman, para qué sirven y cómo trabajan juntos. Las preguntas de huesos, articulaciones y músculos están todas <b>mezcladas</b>, y su orden cambia cada vez que abres la página. Muchas son <b>casos de investigación</b>: lee la pequeña historia y usa lo que sabes para resolverla. Después de responder cada pregunta aparece un botón para <b>ver la solución</b> con la explicación (en las preguntas de escribir, se activa cuando llevas al menos 10 letras).</p>
     <div class="legend">
       <span class="tag vf">Verdadero o falso</span>
       <span class="tag mcq">Selección múltiple</span>
@@ -643,15 +648,26 @@ function answerLine(q){
   if(q.type==="label") return "Las etiquetas correctas son:";
   return "";
 }
+
+/* The "Ver solución" button stays hidden until the question has been
+   answered. reveal(ok) is called by each question type once the student
+   has responded, and shows a CORRECTA/INCORRECTA status before the
+   explanation (vf/mcq/match/label only — open questions have no status). */
 function attachSolution(card, q){
   const btn = document.createElement("button");
   btn.className = "ghostbtn";
   btn.type = "button";
   btn.textContent = "🔍 Ver solución";
+  btn.style.display = "none";
   card.appendChild(btn);
 
   const box = document.createElement("div");
   box.className = "solutionbox";
+
+  const statusDiv = document.createElement("div");
+  statusDiv.className = "statusline";
+  box.appendChild(statusDiv);
+
   const answerDiv = document.createElement("div");
   answerDiv.className = "answerline";
   answerDiv.textContent = answerLine(q);
@@ -674,8 +690,18 @@ function attachSolution(card, q){
   btn.addEventListener("click", ()=>{
     box.classList.toggle("show");
     btn.textContent = box.classList.contains("show") ? "🙈 Ocultar solución" : "🔍 Ver solución";
-    markAnswered(q.id);
   });
+
+  return {
+    reveal(ok){
+      if(btn.style.display==="none"){
+        statusDiv.textContent = ok ? "✅ CORRECTA" : "❌ INCORRECTA";
+        statusDiv.className = "statusline " + (ok ? "status-good" : "status-bad");
+        btn.style.display = "";
+        markAnswered(q.id);
+      }
+    }
+  };
 }
 
 function renderVF(q){
@@ -689,14 +715,15 @@ function renderVF(q){
   row.appendChild(btnT); row.appendChild(btnF);
   card.appendChild(row);
   const fb = feedbackBox(card);
+  const sol = attachSolution(card, q);
 
   function lock(chosenBtn, ok){
     [btnT,btnF].forEach(b=>b.disabled=true);
     chosenBtn.classList.add(ok?"correct":"wrong");
     if(!ok){ (q.answer? btnT:btnF).classList.add("correct"); }
-    showFeedback(fb, (ok?"¡Correcto! ":"La respuesta correcta era otra. ") + "Puedes revisar la solución abajo.", true);
+    showFeedback(fb, (ok?"¡Correcto! ":"Casi... ") + "Ya puedes ver la solución abajo.", true);
     card.classList.add("done");
-    markAnswered(q.id);
+    sol.reveal(ok);
   }
   function attempt(chosenVal, chosenBtn){
     if(btnT.disabled) return;
@@ -705,7 +732,6 @@ function renderVF(q){
   btnT.addEventListener("click", ()=>attempt(true, btnT));
   btnF.addEventListener("click", ()=>attempt(false, btnF));
 
-  attachSolution(card, q);
   return card;
 }
 
@@ -726,14 +752,14 @@ function renderMCQ(q){
       const ok = i===q.correct;
       b.classList.add(ok?"correct":"wrong");
       if(!ok) btns[q.correct].classList.add("correct");
-      showFeedback(fb, (ok?"¡Correcto! ":"La respuesta correcta era otra. ") + "Puedes revisar la solución abajo.", true);
+      showFeedback(fb, (ok?"¡Correcto! ":"Casi... ") + "Ya puedes ver la solución abajo.", true);
       card.classList.add("done");
-      markAnswered(q.id);
+      sol.reveal(ok);
     });
   });
   card.appendChild(list);
   const fb = feedbackBox(card);
-  attachSolution(card, q);
+  const sol = attachSolution(card, q);
   return card;
 }
 
@@ -775,9 +801,9 @@ function renderMatch(q){
         selectedLeft = null;
         matchedCount++;
         if(matchedCount===q.pairs.length){
-          showFeedback(fb, "¡Uniste todo correctamente!", true);
+          showFeedback(fb, "¡Uniste todo correctamente! Ya puedes ver la solución abajo.", true);
           card.classList.add("done");
-          markAnswered(q.id);
+          sol.reveal(true);
         }
       } else {
         el.classList.add("wrong");
@@ -793,7 +819,7 @@ function renderMatch(q){
 
   grid.appendChild(colL); grid.appendChild(colR);
   card.appendChild(grid);
-  attachSolution(card, q);
+  const sol = attachSolution(card, q);
   return card;
 }
 
@@ -844,9 +870,9 @@ function renderLabel(q){
         picked = null;
         filledCount++;
         if(filledCount===q.slots.length){
-          showFeedback(fb, "¡Etiquetaste todo el dibujo!", true);
+          showFeedback(fb, "¡Etiquetaste todo el dibujo! Ya puedes ver la solución abajo.", true);
           card.classList.add("done");
-          markAnswered(q.id);
+          sol.reveal(true);
         }
       } else {
         s.classList.add("wrongflash");
@@ -856,7 +882,7 @@ function renderLabel(q){
     stage.appendChild(s);
   });
 
-  attachSolution(card, q);
+  const sol = attachSolution(card, q);
   return card;
 }
 
@@ -864,12 +890,13 @@ function renderOpen(q){
   const card = baseCard(q);
   const ta = document.createElement("textarea");
   ta.className = "opentext";
-  ta.placeholder = "Escribe aquí tu idea...";
+  ta.placeholder = "Escribe aquí tu idea (mínimo 10 caracteres para desbloquear la solución)...";
   card.appendChild(ta);
 
   const btn = document.createElement("button");
   btn.className = "ghostbtn";
   btn.textContent = "💡 Ver solución";
+  btn.style.display = "none";
   card.appendChild(btn);
 
   const box = document.createElement("div");
@@ -877,11 +904,19 @@ function renderOpen(q){
   box.textContent = q.sample;
   card.appendChild(box);
 
+  let revealed = false;
+  ta.addEventListener("input", ()=>{
+    if(!revealed && ta.value.trim().length >= 10){
+      revealed = true;
+      btn.style.display = "";
+      card.classList.add("done");
+      markAnswered(q.id);
+    }
+  });
+
   btn.addEventListener("click", ()=>{
     box.classList.toggle("show");
     btn.textContent = box.classList.contains("show") ? "🙈 Ocultar solución" : "💡 Ver solución";
-    card.classList.add("done");
-    markAnswered(q.id);
   });
 
   return card;
