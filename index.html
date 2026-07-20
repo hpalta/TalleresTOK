@@ -1,0 +1,961 @@
+<title>Talleres TOK — Huesos y Músculos</title>
+<style>
+  :root{
+    --bg:#eef5f0;
+    --bg-2:#e2eee6;
+    --card:#ffffff;
+    --card-line:#d7e6dc;
+    --ink:#15302a;
+    --ink-soft:#4c6a60;
+    --bone:#c98a3d;
+    --bone-soft:#f3e0bd;
+    --joint:#1f8f83;
+    --joint-soft:#d6f0ec;
+    --muscle:#d9463c;
+    --muscle-soft:#fbdcd8;
+    --gold:#c98a12;
+    --gold-soft:#faedc3;
+    --good:#1f8f4f;
+    --good-soft:#dcf3e4;
+    --bad:#c73838;
+    --bad-soft:#fbdedb;
+    --info:#6a4fce;
+    --info-soft:#ece5fb;
+    --shadow: 0 10px 24px -12px rgba(21,48,42,.28);
+    --display: "Arial Rounded MT Bold","Segoe UI Black","Trebuchet MS",sans-serif;
+    --body: "Segoe UI","Helvetica Neue",Arial,sans-serif;
+    --mono: "Segoe UI","Consolas",monospace;
+  }
+  :root[data-theme="dark"]{
+    --bg:#0e211d; --bg-2:#122a24; --card:#16332c; --card-line:#25493f;
+    --ink:#eaf5f0; --ink-soft:#a9c9bd;
+    --bone:#e7ac5f; --bone-soft:#3a2d17;
+    --joint:#3fc2b3; --joint-soft:#123a35;
+    --muscle:#ff8478; --muscle-soft:#3a1a17;
+    --gold:#f0c04b; --gold-soft:#3a2f10;
+    --good:#4ad080; --good-soft:#123a25;
+    --bad:#ff7b6e; --bad-soft:#3a1512;
+    --info:#b7a2ff; --info-soft:#241a3a;
+    --shadow: 0 10px 26px -12px rgba(0,0,0,.55);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0e211d; --bg-2:#122a24; --card:#16332c; --card-line:#25493f;
+      --ink:#eaf5f0; --ink-soft:#a9c9bd;
+      --bone:#e7ac5f; --bone-soft:#3a2d17;
+      --joint:#3fc2b3; --joint-soft:#123a35;
+      --muscle:#ff8478; --muscle-soft:#3a1a17;
+      --gold:#f0c04b; --gold-soft:#3a2f10;
+      --good:#4ad080; --good-soft:#123a25;
+      --bad:#ff7b6e; --bad-soft:#3a1512;
+      --info:#b7a2ff; --info-soft:#241a3a;
+      --shadow: 0 10px 26px -12px rgba(0,0,0,.55);
+    }
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(1200px 600px at 10% -10%, var(--bg-2), transparent), var(--bg);
+    color:var(--ink); font-family:var(--body); line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  img,svg{max-width:100%;display:block;}
+  h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;}
+  button{font-family:inherit;}
+  .wrap{max-width:920px;margin:0 auto;padding:0 18px 90px;}
+
+  .topbar{
+    position:sticky;top:0;z-index:40;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:2px dashed var(--card-line);
+  }
+  .topbar-inner{max-width:920px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;gap:14px;}
+  .mascot{width:46px;height:46px;flex:none;}
+  .brand{flex:1;min-width:0;}
+  .brand h1{font-size:clamp(1rem,1.6vw + .6rem,1.35rem);color:var(--ink);letter-spacing:.2px;}
+  .brand p{margin:1px 0 0;font-size:.78rem;color:var(--ink-soft);}
+  .progress-pill{
+    display:flex;align-items:center;gap:6px;
+    background:var(--joint-soft);color:var(--joint);
+    border:2px solid var(--joint);border-radius:999px;
+    padding:6px 12px;font-family:var(--mono);font-variant-numeric:tabular-nums;
+    font-weight:700;font-size:.85rem;white-space:nowrap;
+  }
+  .progress-track{height:8px;background:var(--card-line);border-radius:999px;overflow:hidden;max-width:920px;margin:0 auto;}
+  .progress-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--joint),var(--gold));transition:width .5s ease;}
+  .progress-msg{max-width:920px;margin:6px auto 0;padding:0 18px 8px;font-size:.78rem;color:var(--ink-soft);font-style:italic;}
+
+  .hero{
+    margin:26px 0 20px;padding:22px 22px 20px;
+    background:var(--card);border:2px solid var(--card-line);border-radius:22px;
+    box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  .hero h2{font-size:clamp(1.4rem,2.6vw + .7rem,2.1rem);color:var(--joint);margin-bottom:8px;}
+  .hero p{color:var(--ink-soft);max-width:64ch;margin:0 0 12px;}
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+  .legend .tag{font-size:.72rem;font-weight:700;border-radius:8px;padding:5px 9px;border:1.5px solid currentColor;}
+  .tag.vf{color:var(--joint);background:var(--joint-soft);}
+  .tag.mcq{color:var(--muscle);background:var(--muscle-soft);}
+  .tag.match{color:var(--bone);background:var(--bone-soft);}
+  .tag.label{color:var(--gold);background:var(--gold-soft);}
+  .tag.open{color:var(--ink);background:var(--bg-2);}
+  .tag.case{color:var(--info);background:var(--info-soft);}
+  .topiclegend{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-size:.78rem;color:var(--ink-soft);}
+  .topiclegend span{display:inline-flex;align-items:center;gap:5px;}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+
+  .qlist{margin-top:30px;}
+
+  .qcard{
+    background:var(--card);border:2px solid var(--card-line);
+    border-radius:18px;padding:18px 18px 16px;margin:16px 0;
+    box-shadow:var(--shadow);
+  }
+  .qcard.done{border-color:var(--good);}
+  .qmeta{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+  .qbadge{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;border-radius:999px;padding:4px 10px;border:1.5px solid currentColor;}
+  .topicpill{
+    margin-left:auto;font-size:.7rem;font-weight:700;border-radius:999px;padding:4px 10px;
+    border:1.5px solid var(--chip);color:var(--chip);background:var(--chip-soft);
+    display:flex;align-items:center;gap:5px;
+  }
+  .topicpill svg{width:13px;height:13px;}
+  .qprompt{font-size:1.02rem;font-weight:700;margin:0 0 12px;text-wrap:balance;}
+
+  .optlist{display:flex;flex-direction:column;gap:8px;}
+  .opt{
+    text-align:left;border:2px solid var(--card-line);background:var(--bg);
+    color:var(--ink);border-radius:12px;padding:10px 14px;font-size:.95rem;
+    cursor:pointer;transition:transform .12s ease, border-color .12s ease;
+  }
+  .opt:hover:not(:disabled){transform:translateY(-1px);border-color:var(--ink-soft);}
+  .opt:focus-visible{outline:3px solid var(--joint);outline-offset:2px;}
+  .opt:disabled{cursor:default;}
+  .opt.correct{border-color:var(--good);background:var(--good-soft);font-weight:700;}
+  .opt.wrong{border-color:var(--bad);background:var(--bad-soft);}
+  .opt.shake{animation:shake .35s;}
+  @keyframes shake{
+    10%,90%{transform:translateX(-2px);} 20%,80%{transform:translateX(3px);}
+    30%,50%,70%{transform:translateX(-5px);} 40%,60%{transform:translateX(5px);}
+  }
+
+  .vfrow{display:flex;gap:10px;}
+  .vfbtn{flex:1;padding:14px;border-radius:14px;font-weight:800;font-size:1rem;border:2px solid var(--card-line);background:var(--bg);color:var(--ink);cursor:pointer;}
+  .vfbtn:hover:not(:disabled){transform:translateY(-1px);}
+  .vfbtn.correct{border-color:var(--good);background:var(--good-soft);}
+  .vfbtn.wrong{border-color:var(--bad);background:var(--bad-soft);}
+
+  .feedback{margin-top:12px;padding:10px 14px;border-radius:12px;font-size:.9rem;display:none;}
+  .feedback.show{display:block;}
+  .feedback.good{background:var(--good-soft);color:var(--good);}
+  .feedback.retry{background:var(--bad-soft);color:var(--bad);}
+
+  .matchgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;}
+  .matchcol{display:flex;flex-direction:column;gap:8px;}
+  .matchitem{border:2px solid var(--card-line);background:var(--bg);border-radius:12px;padding:9px 12px;font-size:.88rem;cursor:pointer;text-align:left;}
+  .matchitem.sel{border-color:var(--joint);background:var(--joint-soft);}
+  .matchitem.matched{border-color:var(--good);background:var(--good-soft);cursor:default;font-weight:700;}
+  .matchitem.wrong{animation:shake .35s;border-color:var(--bad);}
+
+  .labelstage{position:relative;width:100%;aspect-ratio:4/3;background:var(--bg);border:2px solid var(--card-line);border-radius:14px;overflow:hidden;margin-bottom:12px;}
+  .labelstage svg{position:absolute;inset:0;width:100%;height:100%;}
+  .slot{
+    position:absolute;transform:translate(-50%,-50%);min-width:88px;text-align:center;
+    background:var(--card);border:2px dashed var(--ink-soft);border-radius:10px;padding:5px 8px;
+    font-size:.72rem;font-weight:700;cursor:pointer;color:var(--ink-soft);
+  }
+  .slot.filled{border-style:solid;border-color:var(--good);color:var(--good);background:var(--good-soft);cursor:default;}
+  .slot.wrongflash{animation:shake .35s;border-color:var(--bad);}
+  .bank{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{border:2px solid var(--bone);background:var(--bone-soft);color:var(--bone);border-radius:999px;padding:7px 13px;font-size:.85rem;font-weight:700;cursor:pointer;}
+  .chip.picked{outline:3px solid var(--joint);}
+  .chip.used{display:none;}
+  .labelhint{font-size:.78rem;color:var(--ink-soft);margin-bottom:8px;}
+
+  textarea.opentext{width:100%;min-height:80px;border-radius:12px;border:2px solid var(--card-line);background:var(--bg);color:var(--ink);padding:10px 12px;font-family:inherit;font-size:.92rem;resize:vertical;}
+
+  .ghostbtn{
+    margin-top:12px;border:2px dashed var(--info);border-radius:999px;padding:8px 16px;font-weight:800;
+    background:var(--info-soft);color:var(--info);cursor:pointer;font-size:.82rem;
+  }
+  .solutionbox{
+    margin-top:10px;padding:12px 14px;border-radius:12px;background:var(--info-soft);
+    font-size:.88rem;display:none;border-left:4px solid var(--info);
+  }
+  .solutionbox.show{display:block;}
+  .solutionbox .answerline{font-weight:800;color:var(--info);margin-bottom:6px;}
+  .solutionbox ul{margin:4px 0 0;padding-left:18px;}
+
+  .context{position:relative;background:var(--chip-soft);border:2px dashed var(--chip);border-radius:16px;padding:14px 16px 14px 46px;margin:0 0 12px;font-size:.92rem;color:var(--ink);}
+  .context::before{content:"🔎";position:absolute;left:12px;top:12px;font-size:1.1rem;}
+  .context b{color:var(--chip);}
+
+  .diploma{
+    margin:50px 0 10px;padding:30px 24px;border-radius:24px;text-align:center;
+    background:linear-gradient(160deg, var(--gold-soft), var(--card));
+    border:3px double var(--gold);box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  .diploma h2{font-size:clamp(1.5rem,3vw + .6rem,2.2rem);color:var(--gold);margin-bottom:6px;}
+  .diploma p{color:var(--ink-soft);max-width:50ch;margin:0 auto 16px;}
+  .diploma input{
+    font-family:var(--display);font-size:1.1rem;text-align:center;border:none;border-bottom:3px dashed var(--gold);
+    background:transparent;color:var(--ink);padding:6px 4px;width:min(100%,320px);
+  }
+  .diploma .cert{margin-top:18px;font-size:.95rem;color:var(--ink-soft);}
+  .diploma .cert b{color:var(--ink);font-family:var(--display);font-size:1.15rem;}
+  #confetti{position:absolute;inset:0;pointer-events:none;width:100%;height:100%;}
+
+  footer.note{max-width:920px;margin:30px auto 0;padding:0 18px;color:var(--ink-soft);font-size:.75rem;text-align:center;}
+
+  @media (max-width:560px){ .matchgrid{grid-template-columns:1fr;} }
+  @media (prefers-reduced-motion: reduce){ *{animation-duration:.001ms !important;transition-duration:.001ms !important;} }
+</style>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <svg class="mascot" viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="32" cy="34" r="22" fill="var(--joint-soft)" stroke="var(--joint)" stroke-width="3"/>
+      <circle cx="24" cy="30" r="4" fill="var(--ink)"/><circle cx="40" cy="30" r="4" fill="var(--ink)"/>
+      <path d="M22 42q10 8 20 0" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+      <path d="M16 16 L10 6" stroke="var(--bone)" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="9" cy="5" r="3.4" fill="var(--bone)"/>
+      <path d="M48 16 L54 6" stroke="var(--bone)" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="55" cy="5" r="3.4" fill="var(--bone)"/>
+    </svg>
+    <div class="brand">
+      <h1>Talleres TOK</h1>
+      <p>Ciencias Naturales: huesos y músculos</p>
+    </div>
+    <div class="progress-pill">📖 <span id="answeredNow">0</span>/<span id="answeredTotal">0</span></div>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="progFill"></div></div>
+  <div class="progress-msg" id="progMsg">¡Apenas estamos calentando motores, sigue explorando!</div>
+</div>
+
+<div class="wrap">
+
+  <section class="hero">
+    <h2>Bienvenido/a, joven científico/a 🔬</h2>
+    <p>Vamos a explorar tu <b>esqueleto</b> y tus <b>músculos</b>: cómo se llaman, para qué sirven y cómo trabajan juntos. Las preguntas de huesos, articulaciones y músculos están todas <b>mezcladas</b>, y su orden cambia cada vez que abres la página. Muchas son <b>casos de investigación</b>: lee la pequeña historia y usa lo que sabes para resolverla. Si te atascas, cada pregunta tiene un botón para <b>ver la solución</b>.</p>
+    <div class="legend">
+      <span class="tag vf">Verdadero o falso</span>
+      <span class="tag mcq">Selección múltiple</span>
+      <span class="tag match">Unir conceptos</span>
+      <span class="tag label">Etiqueta el dibujo</span>
+      <span class="tag open">Pregunta abierta</span>
+      <span class="tag case">Caso de investigación</span>
+    </div>
+    <div class="topiclegend" id="topicLegend"></div>
+  </section>
+
+  <div class="qlist" id="qlist"></div>
+
+  <section class="diploma" id="diploma" hidden>
+    <canvas id="confetti"></canvas>
+    <h2>🏅 ¡Expedición completada!</h2>
+    <p>Respondiste las <b id="diplomaTotal">0</b> preguntas sobre huesos y músculos.</p>
+    <label for="explorerName" style="display:block;font-size:.8rem;color:var(--ink-soft);margin-bottom:6px;">Escribe tu nombre para tu diploma:</label>
+    <input id="explorerName" type="text" placeholder="Tu nombre aquí" maxlength="30" />
+    <div class="cert">Certificamos que <b id="certName">___</b> es oficialmente una/un<br/><b>Exploradora/Explorador del Cuerpo Humano</b> 🦴💪</div>
+  </section>
+
+  <footer class="note">Talleres TOK — material de estudio basado únicamente en los documentos de Ciencias Naturales, 2° grado (huesos y músculos), Liceo La Sabana.</footer>
+</div>
+
+<script>
+"use strict";
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+const STATIONS = {
+  huesos: { label:"Huesos", chip:"bone",
+    icon:`<svg viewBox="0 0 48 48"><g fill="none" stroke="var(--bone)" stroke-width="4" stroke-linecap="round"><path d="M10 24h28"/></g><circle cx="9" cy="18" r="5" fill="var(--bone)"/><circle cx="9" cy="30" r="5" fill="var(--bone)"/><circle cx="39" cy="18" r="5" fill="var(--bone)"/><circle cx="39" cy="30" r="5" fill="var(--bone)"/></svg>` },
+  articulaciones: { label:"Articulaciones", chip:"joint",
+    icon:`<svg viewBox="0 0 48 48"><rect x="4" y="20" width="16" height="8" rx="3" fill="var(--joint)"/><rect x="28" y="20" width="16" height="8" rx="3" fill="var(--joint)" transform="rotate(28 36 24)"/><circle cx="24" cy="24" r="6" fill="var(--card)" stroke="var(--joint)" stroke-width="3"/></svg>` },
+  musculos: { label:"Músculos", chip:"muscle",
+    icon:`<svg viewBox="0 0 48 48"><path d="M12 34C8 24 12 10 22 8c-4 6-2 12 2 14 6 2 10-2 10-8 6 4 6 16-2 20-8 4-16 4-20 0z" fill="var(--muscle)"/></svg>` },
+  reto: { label:"Repaso general", chip:"gold",
+    icon:`<svg viewBox="0 0 48 48"><path d="M14 8h20v6a10 10 0 0 1-20 0z" fill="none" stroke="var(--gold)" stroke-width="3"/><path d="M14 10H8a6 6 0 0 0 6 8" fill="none" stroke="var(--gold)" stroke-width="3"/><path d="M34 10h6a6 6 0 0 1-6 8" fill="none" stroke="var(--gold)" stroke-width="3"/><rect x="20" y="26" width="8" height="8" fill="var(--gold)"/><rect x="14" y="34" width="20" height="6" rx="2" fill="var(--gold)"/></svg>` }
+};
+
+function skeletonSVG(){
+  let ribs = ""; for(let i=0;i<4;i++){ ribs += `<line x1="${112-i*2}" y1="${118+i*14}" x2="${188+i*2}" y2="${118+i*14}" stroke="var(--bone)" stroke-width="3" opacity=".65"/>`; }
+  let spine = ""; for(let i=0;i<11;i++){ spine += `<rect x="144" y="${100+i*11}" width="12" height="8" rx="3" fill="var(--bone)"/>`; }
+  return `<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="150" cy="55" r="32" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <circle cx="140" cy="52" r="3" fill="var(--bone)"/><circle cx="160" cy="52" r="3" fill="var(--bone)"/>
+    <path d="M138 66q12 8 24 0" fill="none" stroke="var(--bone)" stroke-width="3" stroke-linecap="round"/>
+    <rect x="140" y="86" width="20" height="16" rx="6" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <rect x="104" y="102" width="92" height="94" rx="34" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    ${ribs}${spine}
+    <polygon points="118,214 182,214 168,244 132,244" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <rect x="70" y="112" width="16" height="80" rx="8" fill="none" stroke="var(--bone)" stroke-width="4" transform="rotate(8 78 150)"/>
+    <rect x="214" y="112" width="16" height="80" rx="8" fill="none" stroke="var(--bone)" stroke-width="4" transform="rotate(-8 222 150)"/>
+    <rect x="128" y="246" width="18" height="86" rx="8" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <rect x="154" y="246" width="18" height="86" rx="8" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <rect x="126" y="334" width="20" height="54" rx="8" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <rect x="154" y="334" width="20" height="54" rx="8" fill="none" stroke="var(--bone)" stroke-width="4"/>
+  </svg>`;
+}
+function armSVG(){
+  return `<svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="70" cy="46" r="18" fill="none" stroke="var(--bone)" stroke-width="6"/>
+    <rect x="60" y="60" width="24" height="100" rx="10" fill="none" stroke="var(--bone)" stroke-width="6"/>
+    <ellipse cx="52" cy="108" rx="24" ry="40" fill="var(--muscle)" opacity=".85"/>
+    <ellipse cx="94" cy="112" rx="12" ry="32" fill="var(--muscle)" opacity=".5"/>
+    <circle cx="72" cy="162" r="14" fill="none" stroke="var(--joint)" stroke-width="6"/>
+    <rect x="62" y="172" width="24" height="90" rx="10" fill="none" stroke="var(--bone)" stroke-width="6" transform="rotate(38 74 172)"/>
+    <line x1="72" y1="150" x2="72" y2="176" stroke="var(--ink-soft)" stroke-width="4" stroke-dasharray="2 4"/>
+  </svg>`;
+}
+function jointsSVG(){
+  return `<svg viewBox="0 0 300 140" xmlns="http://www.w3.org/2000/svg">
+    <g><rect x="20" y="60" width="60" height="16" rx="6" fill="none" stroke="var(--joint)" stroke-width="5"/>
+    <rect x="66" y="60" width="60" height="16" rx="6" fill="none" stroke="var(--joint)" stroke-width="5" transform="rotate(35 96 68)"/>
+    <circle cx="80" cy="68" r="9" fill="var(--card)" stroke="var(--joint)" stroke-width="4"/></g>
+    <g><circle cx="180" cy="55" r="30" fill="none" stroke="var(--bone)" stroke-width="5"/>
+    <polyline points="152,40 162,32 172,42 182,30 192,42 202,32 208,42" fill="none" stroke="var(--bone)" stroke-width="3"/></g>
+    <g><rect x="248" y="30" width="26" height="14" rx="4" fill="var(--bone)"/><rect x="248" y="50" width="26" height="14" rx="4" fill="var(--bone)"/>
+    <rect x="248" y="70" width="26" height="14" rx="4" fill="var(--bone)"/><rect x="248" y="90" width="26" height="14" rx="4" fill="var(--bone)"/></g>
+  </svg>`;
+}
+
+const QUESTIONS = [
+
+{id:"h1", station:"huesos", type:"vf", prompt:"Los huesos son partes duras y resistentes de tu cuerpo.", answer:true,
+ explain:"Los huesos tienen una parte externa muy dura (con calcio) y una interna con forma de esponja."},
+
+{id:"h2", station:"huesos", type:"vf",
+ context:"Simón se cayó de su cama y se asustó porque, al tocarse el brazo, pensó que sus huesos se habían vuelto “blanditos como una almohada”. Su médica se rió y le explicó la verdad.",
+ prompt:"Según lo que sabes, los huesos son blandos y flexibles como la piel.", answer:false,
+ explain:"Los huesos son duros y resistentes; lo blandito que Simón sintió era solo el músculo y la piel de encima."},
+
+{id:"h3", station:"huesos", type:"mcq",
+ prompt:"¿Cuál de estas NO es una función de los huesos?",
+ options:["Dar forma y sostén al cuerpo","Proteger órganos como el cerebro y el corazón","Servir de anclaje para que los músculos jalen","Digerir los alimentos que comemos"],
+ correct:3, explain:"Digerir la comida es trabajo del sistema digestivo, no de los huesos."},
+
+{id:"h4", station:"huesos", type:"mcq",
+ context:"La profesora Ana dibuja en el tablero un hueso pequeño y grueso, de la muñeca, que permite hacer movimientos cortos pero muy fuertes, como agarrar un lápiz con firmeza.",
+ prompt:"Según su forma, ¿de qué tipo de hueso está hablando la profesora?",
+ options:["Hueso largo","Hueso corto","Hueso plano","Hueso irregular"],
+ correct:1, explain:"Los huesos cortos (como los carpianos de la muñeca) están asociados a movimientos reducidos pero con mucha fuerza."},
+
+{id:"h5", station:"huesos", type:"match",
+ prompt:"Une cada tipo de hueso con un ejemplo de dónde se encuentra.",
+ pairs:[["Huesos cortos","Carpianos de la muñeca"],["Huesos planos","Costillas y cráneo"],["Huesos largos","Fémur y húmero"],["Huesos irregulares","Vértebras de la columna"]],
+ explain:"Cada forma de hueso cumple un trabajo distinto: cortos = fuerza en poco espacio, planos = cubrir y proteger, largos = movimientos amplios, irregulares = formas especiales como la columna."},
+
+{id:"h6", station:"huesos", type:"label",
+ prompt:"Este explorador dibujó un esqueleto en su cuaderno pero olvidó los nombres. Coloca cada palabra donde corresponde.",
+ svg:skeletonSVG(),
+ slots:[{id:"craneo", x:50, y:14, correct:"Cráneo"},{id:"costillas", x:26, y:38, correct:"Costillas"},{id:"columna", x:74, y:32, correct:"Columna vertebral"},{id:"femur", x:44, y:78, correct:"Fémur"}],
+ bank:["Cráneo","Costillas","Columna vertebral","Fémur","Corazón","Pulmón"],
+ explain:"El cráneo protege el cerebro, las costillas protegen órganos del pecho, la columna sostiene la espalda y el fémur es el hueso largo de la pierna."},
+
+{id:"h7", station:"huesos", type:"mcq",
+ prompt:"¿Cuántos huesos tiene el esqueleto de una persona adulta?",
+ options:["200","266","206","196"], correct:2, explain:"El esqueleto humano adulto tiene 206 huesos."},
+
+{id:"h8", station:"huesos", type:"vf",
+ context:"Nicolás no ha tomado leche ni comido verduras de hoja verde en varios días. Su mamá le explica: “si tu cuerpo no recibe suficiente calcio de la comida, lo empezará a sacar de tus propios huesos”.",
+ prompt:"Según lo que sabes del calcio, esto que dice la mamá de Nicolás es correcto.", answer:true,
+ explain:"Cuando no comemos suficiente calcio, el cuerpo lo toma de los huesos, y con el tiempo eso los debilita."},
+
+{id:"h9", station:"huesos", type:"mcq",
+ context:"En el mercado, Camila debe escoger alimentos para fortalecer los huesos de toda su familia.",
+ prompt:"¿Cuál de estos alimentos NO le ayuda a fortalecer los huesos?",
+ options:["Leche","Yogur","Brócoli","Papas fritas"], correct:3,
+ explain:"La leche, el yogur y el brócoli aportan calcio. Las papas fritas no son una fuente de calcio."},
+
+{id:"h10", station:"huesos", type:"open",
+ prompt:"Imagina que un día te despiertas sin ningún hueso en el cuerpo. ¿Cómo te verías? ¿Qué cosas no podrías hacer? Cuéntalo con tus palabras.",
+ sample:"Posible idea: me vería como un muñeco de trapo, no podría quedarme de pie, ni caminar, ni proteger mi cerebro o mi corazón, porque los huesos son los que dan forma, sostén y protección al cuerpo."},
+
+{id:"h11", station:"huesos", type:"open",
+ context:"Tu abuela te cuenta que el doctor le diagnosticó osteoporosis, una enfermedad que hace que los huesos se debiliten y se vuelvan frágiles.",
+ prompt:"Usando lo que aprendiste sobre el calcio, explica con tus palabras por qué le puede pasar esto a una persona.",
+ sample:"Posible idea: si una persona no consume suficiente calcio durante mucho tiempo, su cuerpo sigue tomando el calcio que necesita de los huesos, y estos se van debilitando hasta quedar frágiles y fáciles de romper."},
+
+{id:"a1", station:"articulaciones", type:"vf",
+ prompt:"Las articulaciones son la unión entre dos o más huesos.", answer:true,
+ explain:"Por eso, gracias a ellas, los huesos pueden encontrarse y, en algunos casos, moverse."},
+
+{id:"a2", station:"articulaciones", type:"vf",
+ context:"Tomás intenta doblar su frente hacia atrás como si fuera un codo, pero por más que lo intenta, no logra moverla ni un poquito, y termina riéndose con su papá.",
+ prompt:"Lo que le pasó a Tomás confirma que el cráneo es una articulación móvil.", answer:false,
+ explain:"El cráneo es una articulación fija (inmóvil), por eso Tomás no logró doblarlo, ¡y menos mal, porque protege el cerebro!"},
+
+{id:"a3", station:"articulaciones", type:"mcq",
+ prompt:"¿Para qué sirve el cartílago en las articulaciones móviles?",
+ options:["Le da color a los huesos","Reduce el roce entre los huesos al moverse","Ayuda a respirar mejor","No cumple ninguna función"],
+ correct:1, explain:"El cartílago cubre los huesos en las articulaciones móviles y hace mínimo el rozamiento entre ellos."},
+
+{id:"a4", station:"articulaciones", type:"mcq",
+ context:"Laura patea un balón y luego se sienta a descansar doblando bien la rodilla.",
+ prompt:"¿Qué tipo de articulación está usando Laura en la rodilla?",
+ options:["Fija","Semimóvil","Móvil"], correct:2,
+ explain:"La rodilla, igual que la cadera, el hombro, el codo, la muñeca y el tobillo, es una articulación móvil: se mueve en muchas direcciones."},
+
+{id:"a5", station:"articulaciones", type:"mcq",
+ context:"Cuando Daniel se agacha poco a poco para amarrarse los zapatos, cada hueso de su columna (cada vértebra) se mueve apenas un poquito respecto al de al lado.",
+ prompt:"¿Qué tipo de articulación tiene la columna vertebral?",
+ options:["Fija","Semimóvil","Móvil"], correct:1,
+ explain:"Las vértebras de la columna forman articulaciones semimóviles: se mueven poco, pero juntas le dan flexibilidad a toda la espalda."},
+
+{id:"a6", station:"articulaciones", type:"label",
+ prompt:"Un colega dibujó tres tipos de articulaciones en su cuaderno de campo. Etiqueta cada dibujo.",
+ svg:jointsSVG(),
+ slots:[{id:"movil", x:16, y:76, correct:"Articulación móvil"},{id:"fija", x:60, y:26, correct:"Articulación fija"},{id:"semimovil", x:87, y:76, correct:"Articulación semimóvil"}],
+ bank:["Articulación móvil","Articulación fija","Articulación semimóvil","Articulación imaginaria"],
+ explain:"El codo dobla en muchas direcciones (móvil), el cráneo casi no se mueve (fija) y la columna se mueve poquito, vértebra por vértebra (semimóvil)."},
+
+{id:"a7", station:"articulaciones", type:"open",
+ context:"Imagina que, por un hechizo, todas tus articulaciones se volvieran fijas como las del cráneo.",
+ prompt:"¿Podrías correr, saltar o abrazar a alguien? Explica por qué sí o por qué no.",
+ sample:"Posible idea: no podría, porque sin articulaciones móviles los huesos no podrían moverse entre sí; para correr, saltar o abrazar necesitamos que codos, rodillas, hombros y caderas se doblen."},
+
+{id:"a8", station:"articulaciones", type:"vf",
+ prompt:"El líquido sinovial ayuda a que las articulaciones móviles se muevan con más facilidad.", answer:true,
+ explain:"Las articulaciones móviles están llenas de líquido sinovial, que actúa como lubricante."},
+
+{id:"a9", station:"articulaciones", type:"mcq",
+ context:"Valentina se torció el tobillo jugando en el recreo y el doctor le explicó que se había lastimado el cartílago de esa articulación móvil.",
+ prompt:"Según lo que sabes, ¿por qué es tan importante ese cartílago para el tobillo de Valentina?",
+ options:["Porque hace que el tobillo crezca más rápido","Porque reduce el roce entre los huesos y evita que se desgasten al moverse","Porque le da color a la piel del tobillo","Porque ayuda a que el tobillo produzca calcio"],
+ correct:1, explain:"El cartílago protege los huesos del roce en las articulaciones móviles; por eso una lesión ahí duele tanto al moverse."},
+
+{id:"m1", station:"musculos", type:"vf",
+ prompt:"Los músculos están unidos a los huesos por medio de los tendones.", answer:true,
+ explain:"Los tendones son el “cordón” que conecta el músculo con el hueso."},
+
+{id:"m2", station:"musculos", type:"vf",
+ context:"En la clase de ciencias, un compañero de Irina asegura que el cuerpo humano solo tiene 10 músculos en total.",
+ prompt:"¿Tiene razón tu compañero?", answer:false,
+ explain:"El cuerpo humano tiene más de 600 músculos, que permiten el movimiento del cuerpo y muchas acciones de la vida diaria."},
+
+{id:"m3", station:"musculos", type:"mcq",
+ prompt:"¿Cuál de estos NO es un tipo de músculo?",
+ options:["Esquelético","Liso","Cardíaco","Elástico"], correct:3,
+ explain:"Los tres tipos de músculo son esquelético, liso y cardíaco. “Elástico” no es un tipo de músculo."},
+
+{id:"m4", station:"musculos", type:"match",
+ prompt:"Une cada tipo de músculo con el lugar donde se encuentra.",
+ pairs:[["Músculo esquelético","Brazos y piernas"],["Músculo liso","Estómago e intestinos"],["Músculo cardíaco","Paredes del corazón"]],
+ explain:"El esquelético mueve el cuerpo (función locomotora), el liso trabaja en los órganos internos, y el cardíaco bombea la sangre."},
+
+{id:"m5", station:"musculos", type:"mcq",
+ context:"Camilo dobla el codo para tomarse una foto haciendo el gesto de fuerza con el brazo.",
+ prompt:"En ese momento, ¿qué le pasa a su bíceps y a su tríceps?",
+ options:["El bíceps se contrae y el tríceps se relaja","El bíceps se relaja y el tríceps se contrae","Los dos se contraen al mismo tiempo","Los dos se relajan al mismo tiempo"],
+ correct:0, explain:"Al contraerse el bíceps y relajarse el tríceps, el brazo se dobla (flexión)."},
+
+{id:"m6", station:"musculos", type:"vf",
+ context:"Después de la foto, Camilo estira el brazo hacia abajo otra vez.",
+ prompt:"Para estirar el brazo, ahora es el tríceps el que se contrae y el bíceps el que se relaja.", answer:true,
+ explain:"Para enderezar el brazo (extensión), se relaja el bíceps y se contrae el tríceps."},
+
+{id:"m7", station:"musculos", type:"label",
+ prompt:"Este es el brazo de Camilo doblándose. Etiqueta sus partes.",
+ svg:armSVG(),
+ slots:[{id:"biceps", x:18, y:44, correct:"Bíceps"},{id:"triceps", x:36, y:46, correct:"Tríceps"},{id:"tendon", x:26, y:64, correct:"Tendón"},{id:"codo", x:26, y:70, correct:"Articulación del codo"}],
+ bank:["Bíceps","Tríceps","Tendón","Articulación del codo","Pulmón"],
+ explain:"El bíceps y el tríceps son el par de músculos del brazo; el tendón los une al hueso, y la articulación del codo permite el movimiento."},
+
+{id:"m8", station:"musculos", type:"match",
+ context:"Un grupo de científicos observó varias acciones durante un día en el colegio y necesita clasificarlas.",
+ prompt:"Clasifica cada acción según el tipo de movimiento que es.",
+ pairs:[["Succionar leche (bebé recién nacido)","Movimiento involuntario"],["Levantar la mano para participar","Movimiento voluntario"],["Estornudar de repente","Movimiento involuntario"],["Patear un balón en el recreo","Movimiento voluntario"]],
+ explain:"Los movimientos voluntarios dependen de nuestra decisión (levantar la mano, patear el balón); los involuntarios ocurren de forma automática, como reflejos (succionar, estornudar)."},
+
+{id:"m9", station:"musculos", type:"mcq",
+ context:"La profesora de Educación Física pide a los estudiantes identificar ejemplos de movimientos que sí podemos controlar con nuestra voluntad.",
+ prompt:"¿Cuál de estas acciones es un movimiento VOLUNTARIO?",
+ options:["Parpadear por el viento","Toser","Escribir tu nombre en el cuaderno","El latido del corazón"], correct:2,
+ explain:"Escribir tu nombre es un movimiento voluntario: tú decides hacerlo, cómo y hasta cuándo."},
+
+{id:"m10", station:"musculos", type:"open",
+ context:"Tu amigo Julián dice: “yo decido cuándo late mi corazón, igual que decido cuándo levanto la mano”.",
+ prompt:"¿Está en lo correcto Julián? Explica por qué sí o por qué no.",
+ sample:"Posible idea: Julián está equivocado. Levantar la mano es un movimiento voluntario porque lo decide él, pero el latido del corazón es involuntario: ocurre de forma automática, sin que él lo controle."},
+
+{id:"m11", station:"musculos", type:"mcq",
+ context:"En la clase de Educación Física, la profesora hace una lista en el tablero con las funciones de los músculos.",
+ prompt:"¿Cuál de estas ella NUNCA escribiría, porque no es una función real de los músculos?",
+ options:["Movimiento","Equilibrio","Protección","Fabricar sangre nueva"], correct:3,
+ explain:"Las funciones de los músculos son movimiento, equilibrio, protección, forma y postura. Fabricar sangre no es tarea de los músculos."},
+
+{id:"m12", station:"musculos", type:"mcq",
+ context:"Mariana se sienta bien derecha en su silla mientras escucha a la profesora, sin encorvarse.",
+ prompt:"¿Qué función de los músculos está usando principalmente Mariana en ese momento?",
+ options:["Equilibrio","Postura","Protección","Forma"], correct:1,
+ explain:"Mantenerse sentada derecha es un buen ejemplo de la función de postura de los músculos."},
+
+{id:"m13", station:"musculos", type:"vf",
+ context:"Sebastián piensa que los músculos de la cara solo sirven para masticar la comida.",
+ prompt:"¿Tiene razón Sebastián?", answer:false,
+ explain:"Los músculos de la cara también permiten que las expresiones generadas por las emociones (como sonreír o fruncir el ceño) se hagan notorias."},
+
+{id:"m14", station:"musculos", type:"open",
+ prompt:"Piensa en un partido de fútbol. Nombra 3 músculos o grupos musculares que usarías y explica para qué sirve cada uno.",
+ sample:"Posible idea: los femorales y gemelos para correr y patear, los abdominales para mantener el equilibrio al girar, y los músculos de la cara para mostrar emoción al celebrar un gol."},
+
+{id:"r1", station:"reto", type:"mcq",
+ context:"Un doctor observa una radiografía y comenta: “este es un hueso largo y delgado que ayuda a que la pierna dé zancadas amplias al correr”.",
+ prompt:"¿De qué hueso está hablando el doctor?",
+ options:["Fémur","Cráneo","Vértebra","Costilla"], correct:0,
+ explain:"El fémur es un hueso largo, típico de las extremidades, que permite movimientos amplios como correr."},
+
+{id:"r2", station:"reto", type:"vf",
+ prompt:"Sin los tendones que conectan los músculos con los huesos, aunque el músculo se contraiga, el hueso no se movería.", answer:true,
+ explain:"El músculo tira del hueso a través del tendón; sin esa conexión no habría movimiento."},
+
+{id:"r3", station:"reto", type:"mcq",
+ context:"Valeria se rompió el brazo jugando baloncesto y el doctor le puso un yeso para que el hueso no se moviera mientras sana.",
+ prompt:"¿Por qué es tan importante que ese hueso sane bien antes de volver a moverlo?",
+ options:["Porque los huesos sirven de anclaje a los músculos y sostienen el cuerpo; si no sana bien, no podrá cumplir esa función","Porque los huesos rotos cambian de color para siempre","Porque el yeso hace que el hueso produzca más calcio","Porque un hueso roto deja de tener articulaciones"],
+ correct:0, explain:"Los huesos deben sanar bien porque son el punto de anclaje de los músculos y el sostén del cuerpo; si sanan mal, ese trabajo se dificulta."},
+
+{id:"r4", station:"reto", type:"match",
+ prompt:"Une cada concepto con su “superpoder” dentro del cuerpo.",
+ pairs:[["Huesos","Dar sostén y forma al cuerpo"],["Articulaciones","Permitir el movimiento entre huesos"],["Músculos","Generar el movimiento al contraerse"],["Calcio","Fortalecer los huesos"]],
+ explain:"Huesos, articulaciones, músculos y calcio trabajan en equipo: cada uno tiene un “superpoder” distinto pero se necesitan entre sí."},
+
+{id:"r5", station:"reto", type:"open",
+ context:"Eres una ingeniera o ingeniero que está construyendo un robot con forma humana.",
+ prompt:"Explica con tus palabras por qué necesitas huesos, articulaciones Y músculos juntos, y qué pasaría si le faltara uno de los tres.",
+ sample:"Posible idea: los huesos dan la estructura y protegen, las articulaciones permiten que esa estructura se doble, y los músculos son los que jalan los huesos para producir el movimiento. Si falta uno, el robot podría quedar rígido como una estatua, blando como un muñeco de trapo, o con huesos que nunca se doblan."},
+
+{id:"r6", station:"reto", type:"vf",
+ context:"Antes de salir a patinar, un explorador se pone casco, coderas y rodilleras.",
+ prompt:"Usar este tipo de protección ayuda a cuidar tanto los huesos como los músculos.", answer:true,
+ explain:"Los equipos de protección evitan golpes fuertes que pueden lastimar huesos y músculos."},
+
+{id:"r7", station:"reto", type:"mcq",
+ context:"Andrés empezó a jugar fútbol sin estirar ni calentar su cuerpo, y a los 5 minutos sintió un tirón fuerte en la pierna.",
+ prompt:"¿Qué le faltó hacer a Andrés antes de jugar?",
+ options:["Comer más antes del partido","Hacer una rutina de calentamiento","Dormir una siesta larga","Tomar agua muy fría"], correct:1,
+ explain:"Antes de practicar un deporte es importante hacer una rutina de calentamiento que prepare el cuerpo y evite lesiones en huesos o músculos."},
+
+{id:"r8", station:"reto", type:"vf",
+ prompt:"Comer alimentos ricos en calcio, hacer ejercicio con frecuencia y mantener una buena postura ayudan a que tus huesos y músculos se mantengan sanos.", answer:true,
+ explain:"Esos tres hábitos son claves para cuidar tu sistema óseo y muscular toda la vida."}
+
+];
+
+/* ---------------- progress tracking (no scoring) ---------------- */
+const TOTAL_Q = QUESTIONS.length;
+const answeredSet = new Set();
+
+function markAnswered(qid){
+  if(answeredSet.has(qid)) return;
+  answeredSet.add(qid);
+  updateHeader();
+}
+
+function updateHeader(){
+  document.getElementById("answeredNow").textContent = answeredSet.size;
+  document.getElementById("answeredTotal").textContent = TOTAL_Q;
+  const pct = Math.round((answeredSet.size/TOTAL_Q)*100);
+  document.getElementById("progFill").style.width = pct+"%";
+  const msgs = [
+    [0,"¡Apenas estamos calentando motores, sigue explorando!"],
+    [25,"¡Vas muy bien, sigue así, futura/o científica/o!"],
+    [50,"¡A mitad de camino! Tu cerebro está trabajando genial."],
+    [75,"¡Casi terminas la expedición! Un empujón más."],
+    [100,"¡Expedición completada! Eres experta/o en huesos y músculos."]
+  ];
+  let m = msgs[0][1];
+  for(const [t,text] of msgs){ if(pct>=t) m = text; }
+  document.getElementById("progMsg").textContent = m;
+  if(answeredSet.size===TOTAL_Q) showDiploma();
+}
+
+const BADGE = {
+  vf:{cls:"vf", label:"Verdadero o falso"},
+  mcq:{cls:"mcq", label:"Selección múltiple"},
+  match:{cls:"match", label:"Unir conceptos"},
+  label:{cls:"label", label:"Etiqueta el dibujo"},
+  open:{cls:"open", label:"Pregunta abierta"}
+};
+
+function baseCard(q){
+  const card = document.createElement("div");
+  card.className = "qcard";
+  card.dataset.id = q.id;
+  card.style.setProperty("--chip", "var(--"+STATIONS[q.station].chip+")");
+  card.style.setProperty("--chip-soft", "var(--"+STATIONS[q.station].chip+"-soft)");
+
+  if(q.context){
+    const ctx = document.createElement("div");
+    ctx.className = "context";
+    ctx.innerHTML = `<b>Caso de investigación:</b> ${q.context}`;
+    card.appendChild(ctx);
+  }
+
+  const meta = document.createElement("div");
+  meta.className = "qmeta";
+  const b1 = document.createElement("span");
+  b1.className = "qbadge tag "+BADGE[q.type].cls;
+  b1.textContent = BADGE[q.type].label;
+  meta.appendChild(b1);
+  if(q.context){
+    const b2 = document.createElement("span");
+    b2.className = "qbadge tag case";
+    b2.textContent = "Caso";
+    meta.appendChild(b2);
+  }
+  const topic = document.createElement("span");
+  topic.className = "topicpill";
+  topic.innerHTML = STATIONS[q.station].icon + "<span>"+STATIONS[q.station].label+"</span>";
+  meta.appendChild(topic);
+  card.appendChild(meta);
+
+  const p = document.createElement("p");
+  p.className = "qprompt";
+  p.textContent = q.prompt;
+  card.appendChild(p);
+
+  return card;
+}
+
+function feedbackBox(card){
+  const fb = document.createElement("div");
+  fb.className = "feedback";
+  card.appendChild(fb);
+  return fb;
+}
+function showFeedback(fb, text, good){
+  fb.textContent = text;
+  fb.className = "feedback show " + (good?"good":"retry");
+}
+
+/* answer text used by the independent "ver solución" panel */
+function answerLine(q){
+  if(q.type==="vf") return "Respuesta correcta: " + (q.answer ? "Verdadero" : "Falso");
+  if(q.type==="mcq") return "Respuesta correcta: " + q.options[q.correct];
+  if(q.type==="match") return "Las parejas correctas son:";
+  if(q.type==="label") return "Las etiquetas correctas son:";
+  return "";
+}
+function attachSolution(card, q){
+  const btn = document.createElement("button");
+  btn.className = "ghostbtn";
+  btn.type = "button";
+  btn.textContent = "🔍 Ver solución";
+  card.appendChild(btn);
+
+  const box = document.createElement("div");
+  box.className = "solutionbox";
+  const answerDiv = document.createElement("div");
+  answerDiv.className = "answerline";
+  answerDiv.textContent = answerLine(q);
+  box.appendChild(answerDiv);
+
+  if(q.type==="match" || q.type==="label"){
+    const ul = document.createElement("ul");
+    const items = q.type==="match" ? q.pairs.map(p=>p[0]+" → "+p[1]) : q.slots.map(s=>s.correct);
+    items.forEach(t=>{ const li=document.createElement("li"); li.textContent=t; ul.appendChild(li); });
+    box.appendChild(ul);
+  }
+
+  const explainP = document.createElement("p");
+  explainP.style.margin = "8px 0 0";
+  explainP.textContent = q.explain;
+  box.appendChild(explainP);
+
+  card.appendChild(box);
+
+  btn.addEventListener("click", ()=>{
+    box.classList.toggle("show");
+    btn.textContent = box.classList.contains("show") ? "🙈 Ocultar solución" : "🔍 Ver solución";
+    markAnswered(q.id);
+  });
+}
+
+function renderVF(q){
+  const card = baseCard(q);
+  const row = document.createElement("div");
+  row.className = "vfrow";
+  const btnT = document.createElement("button");
+  btnT.className = "vfbtn"; btnT.textContent = "✅ Verdadero";
+  const btnF = document.createElement("button");
+  btnF.className = "vfbtn"; btnF.textContent = "❌ Falso";
+  row.appendChild(btnT); row.appendChild(btnF);
+  card.appendChild(row);
+  const fb = feedbackBox(card);
+
+  function lock(chosenBtn, ok){
+    [btnT,btnF].forEach(b=>b.disabled=true);
+    chosenBtn.classList.add(ok?"correct":"wrong");
+    if(!ok){ (q.answer? btnT:btnF).classList.add("correct"); }
+    showFeedback(fb, (ok?"¡Correcto! ":"La respuesta correcta era otra. ") + "Puedes revisar la solución abajo.", true);
+    card.classList.add("done");
+    markAnswered(q.id);
+  }
+  function attempt(chosenVal, chosenBtn){
+    if(btnT.disabled) return;
+    lock(chosenBtn, chosenVal===q.answer);
+  }
+  btnT.addEventListener("click", ()=>attempt(true, btnT));
+  btnF.addEventListener("click", ()=>attempt(false, btnF));
+
+  attachSolution(card, q);
+  return card;
+}
+
+function renderMCQ(q){
+  const card = baseCard(q);
+  const list = document.createElement("div");
+  list.className = "optlist";
+  const btns = [];
+  q.options.forEach((text,i)=>{
+    const b = document.createElement("button");
+    b.className = "opt";
+    b.textContent = text;
+    list.appendChild(b);
+    btns.push(b);
+    b.addEventListener("click", ()=>{
+      if(btns[0].disabled) return;
+      btns.forEach(x=>x.disabled=true);
+      const ok = i===q.correct;
+      b.classList.add(ok?"correct":"wrong");
+      if(!ok) btns[q.correct].classList.add("correct");
+      showFeedback(fb, (ok?"¡Correcto! ":"La respuesta correcta era otra. ") + "Puedes revisar la solución abajo.", true);
+      card.classList.add("done");
+      markAnswered(q.id);
+    });
+  });
+  card.appendChild(list);
+  const fb = feedbackBox(card);
+  attachSolution(card, q);
+  return card;
+}
+
+function renderMatch(q){
+  const card = baseCard(q);
+  const grid = document.createElement("div");
+  grid.className = "matchgrid";
+  const colL = document.createElement("div"); colL.className="matchcol";
+  const colR = document.createElement("div"); colR.className="matchcol";
+
+  const lefts = q.pairs.map(p=>p[0]);
+  const rights = shuffle(q.pairs.map(p=>p[1]));
+  let selectedLeft = null;
+  let matchedCount = 0;
+  const fb = feedbackBox(card);
+
+  const leftEls = lefts.map((txt)=>{
+    const el = document.createElement("button");
+    el.className="matchitem"; el.textContent=txt;
+    el.addEventListener("click", ()=>{
+      if(el.classList.contains("matched")) return;
+      leftEls.forEach(x=>x.classList.remove("sel"));
+      el.classList.add("sel");
+      selectedLeft = txt;
+    });
+    colL.appendChild(el);
+    return el;
+  });
+  const rightEls = rights.map((txt)=>{
+    const el = document.createElement("button");
+    el.className="matchitem"; el.textContent=txt;
+    el.addEventListener("click", ()=>{
+      if(el.classList.contains("matched") || !selectedLeft) return;
+      const pair = q.pairs.find(p=>p[0]===selectedLeft);
+      if(pair && pair[1]===txt){
+        el.classList.add("matched");
+        const leftEl = leftEls.find(l=>l.textContent===selectedLeft);
+        leftEl.classList.add("matched"); leftEl.classList.remove("sel");
+        selectedLeft = null;
+        matchedCount++;
+        if(matchedCount===q.pairs.length){
+          showFeedback(fb, "¡Uniste todo correctamente!", true);
+          card.classList.add("done");
+          markAnswered(q.id);
+        }
+      } else {
+        el.classList.add("wrong");
+        setTimeout(()=>el.classList.remove("wrong"),400);
+        const leftEl = leftEls.find(l=>l.textContent===selectedLeft);
+        if(leftEl){ leftEl.classList.add("wrong"); setTimeout(()=>leftEl.classList.remove("wrong","sel"),400); }
+        selectedLeft = null;
+      }
+    });
+    colR.appendChild(el);
+    return el;
+  });
+
+  grid.appendChild(colL); grid.appendChild(colR);
+  card.appendChild(grid);
+  attachSolution(card, q);
+  return card;
+}
+
+function renderLabel(q){
+  const card = baseCard(q);
+  const hint = document.createElement("div");
+  hint.className = "labelhint";
+  hint.textContent = "1) Toca una palabra del banco. 2) Toca el lugar del dibujo donde crees que va.";
+  card.appendChild(hint);
+
+  const stage = document.createElement("div");
+  stage.className = "labelstage";
+  stage.innerHTML = q.svg;
+  card.appendChild(stage);
+
+  const bank = document.createElement("div");
+  bank.className = "bank";
+  card.appendChild(bank);
+  const fb = feedbackBox(card);
+
+  let picked = null;
+  let filledCount = 0;
+
+  const chipEls = shuffle(q.bank).map(word=>{
+    const c = document.createElement("button");
+    c.className = "chip"; c.textContent = word;
+    c.addEventListener("click", ()=>{
+      chipEls.forEach(x=>x.classList.remove("picked"));
+      c.classList.add("picked");
+      picked = {word, el:c};
+    });
+    bank.appendChild(c);
+    return c;
+  });
+
+  q.slots.forEach(slot=>{
+    const s = document.createElement("button");
+    s.className = "slot";
+    s.textContent = "?";
+    s.style.left = slot.x+"%";
+    s.style.top = slot.y+"%";
+    s.addEventListener("click", ()=>{
+      if(s.classList.contains("filled") || !picked) return;
+      if(picked.word === slot.correct){
+        s.textContent = slot.correct;
+        s.classList.add("filled");
+        picked.el.classList.add("used");
+        picked = null;
+        filledCount++;
+        if(filledCount===q.slots.length){
+          showFeedback(fb, "¡Etiquetaste todo el dibujo!", true);
+          card.classList.add("done");
+          markAnswered(q.id);
+        }
+      } else {
+        s.classList.add("wrongflash");
+        setTimeout(()=>s.classList.remove("wrongflash"),400);
+      }
+    });
+    stage.appendChild(s);
+  });
+
+  attachSolution(card, q);
+  return card;
+}
+
+function renderOpen(q){
+  const card = baseCard(q);
+  const ta = document.createElement("textarea");
+  ta.className = "opentext";
+  ta.placeholder = "Escribe aquí tu idea...";
+  card.appendChild(ta);
+
+  const btn = document.createElement("button");
+  btn.className = "ghostbtn";
+  btn.textContent = "💡 Ver solución";
+  card.appendChild(btn);
+
+  const box = document.createElement("div");
+  box.className = "solutionbox";
+  box.textContent = q.sample;
+  card.appendChild(box);
+
+  btn.addEventListener("click", ()=>{
+    box.classList.toggle("show");
+    btn.textContent = box.classList.contains("show") ? "🙈 Ocultar solución" : "💡 Ver solución";
+    card.classList.add("done");
+    markAnswered(q.id);
+  });
+
+  return card;
+}
+
+function renderQuestion(q){
+  if(q.type==="vf") return renderVF(q);
+  if(q.type==="mcq") return renderMCQ(q);
+  if(q.type==="match") return renderMatch(q);
+  if(q.type==="label") return renderLabel(q);
+  if(q.type==="open") return renderOpen(q);
+}
+
+function build(){
+  const list = document.getElementById("qlist");
+  const legend = document.getElementById("topicLegend");
+
+  Object.keys(STATIONS).forEach(key=>{
+    const meta = STATIONS[key];
+    const span = document.createElement("span");
+    span.innerHTML = `<span class="dot" style="background:var(--${meta.chip})"></span>${meta.label}`;
+    legend.appendChild(span);
+  });
+
+  const shuffled = shuffle(QUESTIONS);
+  shuffled.forEach(q=>{
+    list.appendChild(renderQuestion(q));
+  });
+
+  updateHeader();
+}
+
+function showDiploma(){
+  const dip = document.getElementById("diploma");
+  if(!dip.hidden) return;
+  dip.hidden = false;
+  document.getElementById("diplomaTotal").textContent = TOTAL_Q;
+  dip.scrollIntoView({behavior:"smooth", block:"center"});
+  runConfetti();
+}
+document.addEventListener("input", (e)=>{
+  if(e.target && e.target.id==="explorerName"){
+    document.getElementById("certName").textContent = e.target.value.trim() || "___";
+  }
+});
+
+function runConfetti(){
+  const canvas = document.getElementById("confetti");
+  const dip = document.getElementById("diploma");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  canvas.width = dip.clientWidth; canvas.height = dip.clientHeight;
+  const ctx = canvas.getContext("2d");
+  const colors = ["#c98a3d","#1f8f83","#d9463c","#eab308"];
+  const N = reduce ? 40 : 90;
+  const parts = Array.from({length:N}, ()=>({
+    x: Math.random()*canvas.width, y: -20 - Math.random()*canvas.height*0.5,
+    r: 3+Math.random()*4, c: colors[Math.floor(Math.random()*colors.length)],
+    vy: reduce? 0 : 1+Math.random()*2, vx: reduce? 0 : -1+Math.random()*2, rot: Math.random()*Math.PI
+  }));
+  let frame=0;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    parts.forEach(p=>{
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+      ctx.fillStyle = p.c; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.6);
+      ctx.restore();
+      p.x += p.vx; p.y += p.vy; p.rot += 0.05;
+      if(p.y > canvas.height+20){ p.y = -10; p.x = Math.random()*canvas.width; }
+    });
+    frame++;
+    if(frame < (reduce?1:220)) requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+build();
+</script>
