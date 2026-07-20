@@ -1,4 +1,4 @@
-<title>Talleres TOK — Huesos y Músculos</title>
+<title>Talleres TOK</title>
 <style>
   :root{
     --bg:#eef5f0;
@@ -21,6 +21,10 @@
     --bad-soft:#fbdedb;
     --info:#6a4fce;
     --info-soft:#ece5fb;
+    --time:#2f6fed;
+    --time-soft:#dbe6fd;
+    --food:#d9720f;
+    --food-soft:#f9e2c6;
     --shadow: 0 10px 24px -12px rgba(21,48,42,.28);
     --display: "Arial Rounded MT Bold","Segoe UI Black","Trebuchet MS",sans-serif;
     --body: "Segoe UI","Helvetica Neue",Arial,sans-serif;
@@ -36,6 +40,8 @@
     --good:#4ad080; --good-soft:#123a25;
     --bad:#ff7b6e; --bad-soft:#3a1512;
     --info:#b7a2ff; --info-soft:#241a3a;
+    --time:#7ea2ff; --time-soft:#1b2a4a;
+    --food:#f5a24d; --food-soft:#3a2712;
     --shadow: 0 10px 26px -12px rgba(0,0,0,.55);
   }
   @media (prefers-color-scheme: dark){
@@ -49,11 +55,14 @@
       --good:#4ad080; --good-soft:#123a25;
       --bad:#ff7b6e; --bad-soft:#3a1512;
       --info:#b7a2ff; --info-soft:#241a3a;
+      --time:#7ea2ff; --time-soft:#1b2a4a;
+      --food:#f5a24d; --food-soft:#3a2712;
       --shadow: 0 10px 26px -12px rgba(0,0,0,.55);
     }
   }
 
   *{box-sizing:border-box;}
+  [hidden]{display:none !important;}
   html,body{margin:0;padding:0;}
   body{
     background:radial-gradient(1200px 600px at 10% -10%, var(--bg-2), transparent), var(--bg);
@@ -85,6 +94,36 @@
   .progress-track{height:8px;background:var(--card-line);border-radius:999px;overflow:hidden;max-width:920px;margin:0 auto;}
   .progress-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--joint),var(--gold));transition:width .5s ease;}
   .progress-msg{max-width:920px;margin:6px auto 0;padding:0 18px 8px;font-size:.78rem;color:var(--ink-soft);font-style:italic;}
+
+  .picker{margin:30px 0;}
+  .picker-head{text-align:center;margin-bottom:22px;}
+  .picker-head h2{font-size:clamp(1.5rem,3vw + .6rem,2.3rem);color:var(--joint);margin-bottom:8px;}
+  .picker-head p{color:var(--ink-soft);max-width:56ch;margin:0 auto;}
+  .picker-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;}
+  .subjectcard{
+    text-align:left;cursor:pointer;border:2.5px solid var(--chip);background:var(--card);
+    border-radius:22px;padding:22px;box-shadow:var(--shadow);
+    display:flex;flex-direction:column;gap:10px;color:var(--ink);
+    transition:transform .14s ease;
+  }
+  .subjectcard:hover{transform:translateY(-3px);}
+  .subjectcard:focus-visible{outline:3px solid var(--chip);outline-offset:3px;}
+  .subjectcard .sc-icon{
+    width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;
+    background:var(--chip-soft);border:2px solid var(--chip);
+  }
+  .subjectcard .sc-icon svg{width:32px;height:32px;}
+  .subjectcard h3{font-family:var(--display);font-size:1.25rem;color:var(--chip);margin:0;}
+  .subjectcard p{margin:0;color:var(--ink-soft);font-size:.9rem;}
+  .subjectcard .sc-count{
+    align-self:flex-start;font-family:var(--mono);font-size:.72rem;font-weight:700;
+    color:var(--chip);background:var(--chip-soft);border-radius:999px;padding:4px 10px;
+  }
+  .switchbar{display:flex;justify-content:flex-end;margin:0 0 -6px;}
+  .switchbtn{
+    border:none;background:none;color:var(--ink-soft);font-size:.8rem;font-weight:700;
+    cursor:pointer;text-decoration:underline;padding:6px;
+  }
 
   .hero{
     margin:26px 0 20px;padding:22px 22px 20px;
@@ -230,42 +269,55 @@
     </svg>
     <div class="brand">
       <h1>Talleres TOK</h1>
-      <p>Ciencias Naturales: huesos y músculos</p>
+      <p id="brandSubtitle">Elige tu materia</p>
     </div>
-    <div class="progress-pill">📖 <span id="answeredNow">0</span>/<span id="answeredTotal">0</span></div>
+    <div class="progress-pill" id="progressPill" hidden>📖 <span id="answeredNow">0</span>/<span id="answeredTotal">0</span></div>
   </div>
-  <div class="progress-track"><div class="progress-fill" id="progFill"></div></div>
-  <div class="progress-msg" id="progMsg">¡Apenas estamos calentando motores, sigue explorando!</div>
+  <div class="progress-track" id="progressTrack" hidden><div class="progress-fill" id="progFill"></div></div>
+  <div class="progress-msg" id="progMsg" hidden>¡Apenas estamos calentando motores, sigue explorando!</div>
 </div>
 
 <div class="wrap">
 
-  <section class="hero">
-    <h2>Bienvenido/a, joven científico/a 🔬</h2>
-    <p>Vamos a explorar tu <b>esqueleto</b> y tus <b>músculos</b>: cómo se llaman, para qué sirven y cómo trabajan juntos. Las preguntas de huesos, articulaciones y músculos están todas <b>mezcladas</b>, y su orden cambia cada vez que abres la página. Muchas son <b>casos de investigación</b>: lee la pequeña historia y usa lo que sabes para resolverla. Después de responder cada pregunta aparece un botón para <b>ver la solución</b> con la explicación (en las preguntas de escribir, se activa cuando llevas al menos 10 letras).</p>
-    <div class="legend">
-      <span class="tag vf">Verdadero o falso</span>
-      <span class="tag mcq">Selección múltiple</span>
-      <span class="tag match">Unir conceptos</span>
-      <span class="tag label">Etiqueta el dibujo</span>
-      <span class="tag open">Pregunta abierta</span>
-      <span class="tag case">Caso de investigación</span>
+  <section class="picker" id="pickerScreen">
+    <div class="picker-head">
+      <h2>¿Qué materia vamos a repasar hoy? 🎒</h2>
+      <p>Elige una asignatura y empieza tu expedición. Puedes cambiar de materia cuando quieras.</p>
     </div>
-    <div class="topiclegend" id="topicLegend"></div>
+    <div class="picker-grid" id="pickerGrid"></div>
   </section>
 
-  <div class="qlist" id="qlist"></div>
+  <div id="quizArea" hidden>
+    <div class="switchbar"><button class="switchbtn" id="switchSubject" type="button">← Cambiar de materia</button></div>
 
-  <section class="diploma" id="diploma" hidden>
-    <canvas id="confetti"></canvas>
-    <h2>🏅 ¡Expedición completada!</h2>
-    <p>Respondiste las <b id="diplomaTotal">0</b> preguntas sobre huesos y músculos.</p>
-    <label for="explorerName" style="display:block;font-size:.8rem;color:var(--ink-soft);margin-bottom:6px;">Escribe tu nombre para tu diploma:</label>
-    <input id="explorerName" type="text" placeholder="Tu nombre aquí" maxlength="30" />
-    <div class="cert">Certificamos que <b id="certName">___</b> es oficialmente una/un<br/><b>Exploradora/Explorador del Cuerpo Humano</b> 🦴💪</div>
-  </section>
+    <section class="hero">
+      <h2 id="heroTitle"></h2>
+      <p id="heroBlurb"></p>
+      <div class="legend">
+        <span class="tag vf">Verdadero o falso</span>
+        <span class="tag mcq">Selección múltiple</span>
+        <span class="tag match">Unir conceptos</span>
+        <span class="tag label">Etiqueta el dibujo</span>
+        <span class="tag open">Pregunta abierta</span>
+        <span class="tag case">Caso de investigación</span>
+      </div>
+      <div class="topiclegend" id="topicLegend"></div>
+    </section>
 
-  <footer class="note">Talleres TOK — material de estudio basado únicamente en los documentos de Ciencias Naturales, 2° grado (huesos y músculos), Liceo La Sabana.</footer>
+    <div class="qlist" id="qlist"></div>
+
+    <section class="diploma" id="diploma" hidden>
+      <canvas id="confetti"></canvas>
+      <h2>🏅 ¡Expedición completada!</h2>
+      <p>Respondiste las <b id="diplomaTotal">0</b> preguntas <b id="diplomaSubject">de esta materia</b>.</p>
+      <label for="explorerName" style="display:block;font-size:.8rem;color:var(--ink-soft);margin-bottom:6px;">Escribe tu nombre para tu diploma:</label>
+      <input id="explorerName" type="text" placeholder="Tu nombre aquí" maxlength="30" />
+      <div class="cert">Certificamos que <b id="certName">___</b> es oficialmente una/un<br/><b id="certTitle">Exploradora/Explorador</b> 🏅</div>
+      <button class="switchbtn" id="switchSubjectDiploma" type="button" style="margin-top:14px;">← Elegir otra materia</button>
+    </section>
+  </div>
+
+  <footer class="note">Talleres TOK — material de estudio basado únicamente en los documentos compartidos por el colegio (Ciencias Naturales e Inglés), 2° grado.</footer>
 </div>
 
 <script>
@@ -285,7 +337,34 @@ const STATIONS = {
   musculos: { label:"Músculos", chip:"muscle",
     icon:`<svg viewBox="0 0 48 48"><path d="M12 34C8 24 12 10 22 8c-4 6-2 12 2 14 6 2 10-2 10-8 6 4 6 16-2 20-8 4-16 4-20 0z" fill="var(--muscle)"/></svg>` },
   reto: { label:"Repaso general", chip:"gold",
+    icon:`<svg viewBox="0 0 48 48"><path d="M14 8h20v6a10 10 0 0 1-20 0z" fill="none" stroke="var(--gold)" stroke-width="3"/><path d="M14 10H8a6 6 0 0 0 6 8" fill="none" stroke="var(--gold)" stroke-width="3"/><path d="M34 10h6a6 6 0 0 1-6 8" fill="none" stroke="var(--gold)" stroke-width="3"/><rect x="20" y="26" width="8" height="8" fill="var(--gold)"/><rect x="14" y="34" width="20" height="6" rx="2" fill="var(--gold)"/></svg>` },
+  rutina: { label:"My Day", chip:"time",
+    icon:`<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="18" fill="none" stroke="var(--time)" stroke-width="4"/><path d="M24 14v10l8 5" fill="none" stroke="var(--time)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>` },
+  comida: { label:"Fantastic Food", chip:"food",
+    icon:`<svg viewBox="0 0 48 48"><circle cx="18" cy="20" r="9" fill="none" stroke="var(--food)" stroke-width="4"/><circle cx="32" cy="26" r="7" fill="none" stroke="var(--food)" stroke-width="4"/><circle cx="18" cy="20" r="2.5" fill="var(--food)"/></svg>` },
+  retoIngles: { label:"Review", chip:"gold",
     icon:`<svg viewBox="0 0 48 48"><path d="M14 8h20v6a10 10 0 0 1-20 0z" fill="none" stroke="var(--gold)" stroke-width="3"/><path d="M14 10H8a6 6 0 0 0 6 8" fill="none" stroke="var(--gold)" stroke-width="3"/><path d="M34 10h6a6 6 0 0 1-6 8" fill="none" stroke="var(--gold)" stroke-width="3"/><rect x="20" y="26" width="8" height="8" fill="var(--gold)"/><rect x="14" y="34" width="20" height="6" rx="2" fill="var(--gold)"/></svg>` }
+};
+
+const SUBJECTS = {
+  ciencias: {
+    title:"Ciencias Naturales", subtitle:"Ciencias Naturales: huesos y músculos",
+    heroTitle:"Bienvenido/a, joven científico/a 🔬",
+    heroBlurb:"Vamos a explorar tu <b>esqueleto</b> y tus <b>músculos</b>: cómo se llaman, para qué sirven y cómo trabajan juntos. Las preguntas de huesos, articulaciones y músculos están todas <b>mezcladas</b>, y su orden cambia cada vez que abres la página. Muchas son <b>casos de investigación</b>: lee la pequeña historia y usa lo que sabes para resolverla. Después de responder cada pregunta aparece un botón para <b>ver la solución</b> con la explicación (en las preguntas de escribir, se activa cuando llevas al menos 10 letras).",
+    blurb:"Huesos, articulaciones y músculos: cómo funciona tu cuerpo por dentro.",
+    diplomaSubject:"sobre huesos y músculos", certTitle:"Exploradora/Explorador del Cuerpo Humano 🦴💪",
+    chip:"joint",
+    icon:`<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="none" stroke="var(--joint)" stroke-width="3"/><path d="M16 16 L10 6" stroke="var(--bone)" stroke-width="3" stroke-linecap="round"/><circle cx="9" cy="5" r="3" fill="var(--bone)"/><path d="M32 16 L38 6" stroke="var(--bone)" stroke-width="3" stroke-linecap="round"/><circle cx="39" cy="5" r="3" fill="var(--bone)"/><circle cx="19" cy="22" r="2.4" fill="var(--ink)"/><circle cx="29" cy="22" r="2.4" fill="var(--ink)"/><path d="M17 30q7 6 14 0" fill="none" stroke="var(--ink)" stroke-width="2.6" stroke-linecap="round"/></svg>`
+  },
+  ingles: {
+    title:"Inglés", subtitle:"English: My Day &amp; Fantastic Food",
+    heroTitle:"Welcome, young explorer! 🗺️",
+    heroBlurb:"Vamos a practicar <b>Unit 6 · My Day</b> y <b>Unit 7 · Fantastic Food</b>: la hora (<i>What time...? At... o'clock</i>), las rutinas diarias, el vocabulario de comida y las oraciones con <i>some</i> y <i>any</i>. Las preguntas están <b>mezcladas</b> y cambian de orden cada vez que abres la página. Muchas son <b>casos de investigación</b> en inglés: lee el mini-texto y responde. Después de contestar cada pregunta aparece el botón <b>Ver solución</b>.",
+    blurb:"Unit 6 My Day y Unit 7 Fantastic Food: hora, rutinas, comida y some/any.",
+    diplomaSubject:"de inglés (Unit 6 y 7)", certTitle:"English Explorer 🇬🇧⭐",
+    chip:"time",
+    icon:`<svg viewBox="0 0 48 48"><rect x="6" y="10" width="36" height="28" rx="4" fill="none" stroke="var(--time)" stroke-width="3"/><path d="M6 16h36" stroke="var(--time)" stroke-width="3"/><path d="M16 22h16M16 28h10" stroke="var(--food)" stroke-width="3" stroke-linecap="round"/></svg>`
+  }
 };
 
 /* Dashed gold line + dot = "this is exactly what the label refers to",
@@ -380,6 +459,27 @@ function jointsSVG(){
     <rect x="253" y="102" width="6" height="10" fill="var(--joint)" opacity=".8"/><rect x="281" y="102" width="6" height="10" fill="var(--joint)" opacity=".8"/>
     <rect x="256" y="114" width="28" height="16" rx="5" fill="none" stroke="var(--bone)" stroke-width="3.5"/>
     ${leader(257,77,270,150)}
+  </svg>`;
+}
+
+function clockFace(cx,cy,handEnd){
+  let ticks="";
+  [[cx,cy-40,cx,cy-33],[cx,cy+33,cx,cy+40],[cx-40,cy,cx-33,cy],[cx+33,cy,cx+40,cy]].forEach(([x1,y1,x2,y2])=>{
+    ticks += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--time)" stroke-width="3" stroke-linecap="round"/>`;
+  });
+  return `<circle cx="${cx}" cy="${cy}" r="40" fill="none" stroke="var(--time)" stroke-width="4"/>${ticks}
+    <line x1="${cx}" y1="${cy}" x2="${cx}" y2="${cy-30}" stroke="var(--time)" stroke-width="3" stroke-linecap="round"/>
+    <line x1="${cx}" y1="${cy}" x2="${handEnd[0]}" y2="${handEnd[1]}" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="${cx}" cy="${cy}" r="4" fill="var(--ink)"/>`;
+}
+function clocksSVG(){
+  return `<svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg">
+    ${clockFace(55,55,[79,55])}
+    ${clockFace(150,55,[138,76])}
+    ${clockFace(245,55,[224,43])}
+    ${leader(55,55,55,140)}
+    ${leader(150,55,150,140)}
+    ${leader(245,55,245,140)}
   </svg>`;
 }
 
@@ -606,8 +706,214 @@ const QUESTIONS = [
 
 ];
 
+const QUESTIONS_INGLES = [
+
+/* ===== MY DAY: rutina + hora ===== */
+{id:"e1", station:"rutina", type:"vf",
+ context:"Sofía opens her eyes, sits up, and gets out of bed.",
+ prompt:"Sofía is doing the action “go to bed”.", answer:false,
+ explain:"“Go to bed” means lying down to sleep. What Sofía is doing is “get up” — waking up and getting out of bed."},
+
+{id:"e2", station:"rutina", type:"mcq",
+ context:"Look outside: the sun is coming up and the clock says 7:00.",
+ prompt:"Complete: It’s seven o’clock in the ____.",
+ options:["morning","afternoon","evening","night"], correct:0,
+ explain:"When the sun comes up, in English we say “in the morning”."},
+
+{id:"e3", station:"rutina", type:"mcq",
+ context:"It’s dark outside, everyone is sleepy, and the clock says 9:00.",
+ prompt:"Complete: It’s nine o’clock in the ____.",
+ options:["morning","afternoon","evening"], correct:2,
+ explain:"When it starts getting dark before bedtime, we usually say “in the evening”."},
+
+{id:"e4", station:"rutina", type:"match",
+ prompt:"Match each daily routine to the time of day it usually happens.",
+ pairs:[["get up","in the morning"],["eat lunch","in the afternoon"],["eat dinner","in the evening"],["go to bed","at night"]],
+ explain:"Daily routines follow the day: get up in the morning, eat lunch in the afternoon, eat dinner in the evening, and go to bed at night."},
+
+{id:"e5", station:"rutina", type:"mcq",
+ context:"Ana always says: “I get up at seven o’clock. Then I get dressed. After that, I eat breakfast.”",
+ prompt:"What does Ana do right after she gets up?",
+ options:["She eats breakfast.","She gets dressed.","She goes to bed.","She does homework."], correct:1,
+ explain:"Ana’s order is: get up → get dressed → eat breakfast. Right after getting up, she gets dressed."},
+
+{id:"e6", station:"rutina", type:"vf",
+ context:"Remember Ana’s routine: get up → get dressed → eat breakfast.",
+ prompt:"Ana eats breakfast before she gets dressed.", answer:false,
+ explain:"Ana gets dressed first, and eats breakfast after — not before."},
+
+{id:"e7", station:"rutina", type:"mcq",
+ context:"Your teacher asks you a question about the clock but forgets one word.",
+ prompt:"Complete: “____ time do you get up?”",
+ options:["What","Where","Who","When"], correct:0,
+ explain:"To ask about a clock time in this unit, we use “What time…?”, like “What time do you get up?”."},
+
+{id:"e8", station:"rutina", type:"mcq",
+ context:"Camila is talking about her morning.",
+ prompt:"Complete: “I ____ up at eight o’clock.”",
+ options:["get","gets","getting","got"], correct:0,
+ explain:"With I / you / we / they, we use the base form: “I get up”, not “gets”."},
+
+{id:"e9", station:"rutina", type:"mcq",
+ context:"Camilo’s sister is describing her brother’s routine: “My brother ___ up at seven o’clock every day.”",
+ prompt:"Which word completes her sentence correctly?",
+ options:["get","gets","getting"], correct:1,
+ explain:"With he / she, verbs add “-s”: “He gets up”, “She gets up”."},
+
+{id:"e10", station:"rutina", type:"open",
+ prompt:"Answer in English, like in your book: What time do you go to bed? (Example: I go to bed at nine o’clock.)",
+ sample:"Possible answer: I go to bed at nine o’clock."},
+
+{id:"e11", station:"rutina", type:"label",
+ prompt:"Look at the clocks. Drag the correct time phrase under each one.",
+ svg:clocksSVG(), aspect:"300/150",
+ slots:[{id:"c1", x:18.3, y:93.3, correct:"It’s three o’clock."},{id:"c2", x:50, y:93.3, correct:"It’s seven o’clock."},{id:"c3", x:81.7, y:93.3, correct:"It’s ten o’clock."}],
+ bank:["It’s three o’clock.","It’s seven o’clock.","It’s ten o’clock.","It’s five o’clock."],
+ explain:"The hour hand points to the number, and we say “It’s ___ o’clock.” for that hour."},
+
+{id:"e12", station:"rutina", type:"mcq",
+ prompt:"Which sentence is written correctly?",
+ options:["What time is it? It’s eight o’clock in the morning.","What time it is? Is eight o’clock the morning.","What time is it? Eight o’clock is in morning."],
+ correct:0,
+ explain:"The correct order is: “What time is it? It’s eight o’clock in the morning.”"},
+
+{id:"e13", station:"rutina", type:"open",
+ context:"Think about your own morning before school.",
+ prompt:"Write two things you do every morning, in English. (Example: I get up. I get dressed.)",
+ sample:"Possible answer: I get up. I eat breakfast."},
+
+{id:"e14", station:"rutina", type:"vf",
+ context:"Every night at nine o’clock, Camilo brushes his teeth and then goes to bed.",
+ prompt:"Camilo goes to bed before he brushes his teeth.", answer:false,
+ explain:"He brushes his teeth first, and goes to bed after — not before."},
+
+/* ===== FANTASTIC FOOD: comida + some/any ===== */
+{id:"f1", station:"comida", type:"vf",
+ context:"Look at a fruit bowl with apples, pears, and grapes.",
+ prompt:"“Grapes” is a kind of vegetable.", answer:false,
+ explain:"Grapes are a fruit, not a vegetable — like pears and mangoes."},
+
+{id:"f2", station:"comida", type:"mcq",
+ context:"You are packing a lunchbox with pear, mango, grapes, and cheese.",
+ prompt:"Which one is NOT a fruit?",
+ options:["pear","mango","grapes","cheese"], correct:3,
+ explain:"Cheese comes from milk — it’s a dairy food, not a fruit."},
+
+{id:"f3", station:"comida", type:"mcq",
+ prompt:"Which one is a DRINK, not a food?",
+ options:["rice","orange juice","beans","chicken"], correct:1,
+ explain:"Orange juice is a drink. Rice, beans, and chicken are foods you eat, not drink."},
+
+{id:"f4", station:"comida", type:"match",
+ prompt:"Match each food to its group.",
+ pairs:[["pear","fruit"],["cheese","dairy"],["chicken","meat"],["rice","grain"]],
+ explain:"Foods can be grouped: pear is a fruit, cheese is dairy, chicken is meat, and rice is a grain."},
+
+{id:"f5", station:"comida", type:"mcq",
+ context:"You look in the fridge: there is milk, cheese, and eggs, but no juice.",
+ prompt:"Complete: “There ___ any juice in the fridge.”",
+ options:["isn’t","aren’t","is","are"], correct:0,
+ explain:"“Juice” is uncountable/singular, so the negative form is “There isn’t any juice.”"},
+
+{id:"f6", station:"comida", type:"mcq",
+ context:"Same fridge: there is milk, cheese, and eggs.",
+ prompt:"Complete: “There ___ some eggs in the fridge.”",
+ options:["is","are","isn’t","aren’t"], correct:1,
+ explain:"“Eggs” is plural, so we use “There are some eggs.”"},
+
+{id:"f7", station:"comida", type:"mcq",
+ prompt:"Complete: “There’s a ___.” (choose the word that fits “a ___”)",
+ options:["mango","beans","grapes","fries"], correct:0,
+ explain:"“A” goes with a singular word: “There’s a mango.”"},
+
+{id:"f8", station:"comida", type:"mcq",
+ prompt:"Complete: “There are some ___.” (choose the plural word)",
+ options:["cheese","mango","sausages","milk"], correct:2,
+ explain:"“Sausages” is plural, so it fits “There are some sausages.”"},
+
+{id:"f9", station:"comida", type:"vf",
+ context:"Mateo opens his lunchbox. He finds rice, chicken, and grapes, but no fries.",
+ prompt:"“There aren’t any fries in Mateo’s lunchbox” is a correct sentence about his lunch.", answer:true,
+ explain:"Since there are no fries, the negative plural form “There aren’t any fries” is correct."},
+
+{id:"f10", station:"comida", type:"mcq",
+ context:"Someone answers: “Yes, there is.”",
+ prompt:"Which question matches that answer?",
+ options:["Is there any rice?","Are there any fries?","Is there any fries?"], correct:0,
+ explain:"“Rice” is singular/uncountable, so the question is “Is there any rice?” and the short answer is “Yes, there is.”"},
+
+{id:"f11", station:"comida", type:"mcq",
+ context:"Someone answers: “No, there aren’t.”",
+ prompt:"Which question matches that answer?",
+ options:["Are there any grapes?","Is there any milk?","Are there any milk?"], correct:0,
+ explain:"“Grapes” is plural, so the question is “Are there any grapes?” and the short answer is “No, there aren’t.”"},
+
+{id:"f12", station:"comida", type:"mcq",
+ context:"Look at an empty fruit bowl.",
+ prompt:"Choose the correct sentence.",
+ options:["There isn’t any fruit.","There isn’t some fruit.","There aren’t any fruit."], correct:0,
+ explain:"“Fruit” is treated as uncountable here, so the correct negative is “There isn’t any fruit.”"},
+
+{id:"f13", station:"comida", type:"open",
+ context:"Imagine your own lunchbox.",
+ prompt:"Write one sentence with “There’s some…” and one with “There isn’t any…”. (Example: There’s some rice. There isn’t any cheese.)",
+ sample:"Possible answer: There’s some rice. There isn’t any cheese."},
+
+{id:"f14", station:"comida", type:"vf",
+ context:"At the market, Valentina’s mom buys pears, grapes, and cheese. She doesn’t buy any meat.",
+ prompt:"“There is some chicken in Valentina’s mom’s bag” is true.", answer:false,
+ explain:"She didn’t buy meat, so there is no chicken in her bag — the sentence is false."},
+
+/* ===== REVIEW: mixto + suggestions ===== */
+{id:"g1", station:"retoIngles", type:"mcq",
+ context:"Every day, Laura eats breakfast at seven o’clock, goes to school, and eats lunch at twelve o’clock.",
+ prompt:"What time does Laura eat lunch?",
+ options:["Seven o’clock","Twelve o’clock","Nine o’clock"], correct:1,
+ explain:"The text says Laura eats lunch at twelve o’clock."},
+
+{id:"g2", station:"retoIngles", type:"mcq",
+ context:"Ezra asks: “Do you want to play soccer?”",
+ prompt:"Complete Milo’s answer: “____. That sounds like fun!”",
+ options:["Sure","Not really","Goodbye"], correct:0,
+ explain:"“Sure. That sounds like fun!” is how you accept a suggestion happily."},
+
+{id:"g3", station:"retoIngles", type:"mcq",
+ prompt:"Which is a POLITE way to say no to a suggestion?",
+ options:["Not really.","No! Never!","I hate that."], correct:0,
+ explain:"“Not really.” is the polite way this unit teaches to decline a suggestion."},
+
+{id:"g4", station:"retoIngles", type:"vf",
+ prompt:"“Let’s go to the park” is a way to suggest doing something together.", answer:true,
+ explain:"“Let’s + verb” is used to suggest an activity, like “Let’s go to the park.”"},
+
+{id:"g5", station:"retoIngles", type:"open",
+ prompt:"Write about your day using at least 3 routine words in English (get up, eat breakfast, go to bed, etc.).",
+ sample:"Possible answer: I get up at seven o’clock. I eat breakfast. I go to bed at nine o’clock."},
+
+{id:"g6", station:"retoIngles", type:"match",
+ prompt:"Match each question to the correct short answer.",
+ pairs:[["What time do you get up?","I get up at seven o’clock."],["Is there any milk?","Yes, there is."],["Are there any pears?","No, there aren’t."],["Do you want to play?","Sure, that sounds like fun!"]],
+ explain:"Each question in this unit has its own typical short answer pattern — practicing them helps you answer quickly."},
+
+{id:"g7", station:"retoIngles", type:"vf",
+ prompt:"In English, we say “There ARE some apples” because “apples” is a plural word.", answer:true,
+ explain:"Plural nouns like “apples” use “are”: “There are some apples.”"},
+
+{id:"g8", station:"retoIngles", type:"mcq",
+ context:"Two classmates are comparing notes: one studied routines, the other studied food.",
+ prompt:"Which sentence is about FOOD, not routine?",
+ options:["There’s some rice.","I get up at seven.","I go to bed at nine."], correct:0,
+ explain:"“There’s some rice.” talks about food. The other two sentences are about daily routine times."}
+
+];
+
+QUESTIONS.forEach(q=>q.subject="ciencias");
+QUESTIONS_INGLES.forEach(q=>q.subject="ingles");
+const QUESTIONS_ALL = QUESTIONS.concat(QUESTIONS_INGLES);
+
 /* ---------------- progress tracking (no scoring) ---------------- */
-const TOTAL_Q = QUESTIONS.length;
+let activeSubject = null;
+let activeQuestions = [];
 const answeredSet = new Set();
 
 function markAnswered(qid){
@@ -617,21 +923,22 @@ function markAnswered(qid){
 }
 
 function updateHeader(){
+  const total = activeQuestions.length;
   document.getElementById("answeredNow").textContent = answeredSet.size;
-  document.getElementById("answeredTotal").textContent = TOTAL_Q;
-  const pct = Math.round((answeredSet.size/TOTAL_Q)*100);
+  document.getElementById("answeredTotal").textContent = total;
+  const pct = total ? Math.round((answeredSet.size/total)*100) : 0;
   document.getElementById("progFill").style.width = pct+"%";
   const msgs = [
     [0,"¡Apenas estamos calentando motores, sigue explorando!"],
     [25,"¡Vas muy bien, sigue así, futura/o científica/o!"],
     [50,"¡A mitad de camino! Tu cerebro está trabajando genial."],
     [75,"¡Casi terminas la expedición! Un empujón más."],
-    [100,"¡Expedición completada! Eres experta/o en huesos y músculos."]
+    [100,"¡Expedición completada! Lo lograste."]
   ];
   let m = msgs[0][1];
   for(const [t,text] of msgs){ if(pct>=t) m = text; }
   document.getElementById("progMsg").textContent = m;
-  if(answeredSet.size===TOTAL_Q) showDiploma();
+  if(total>0 && answeredSet.size===total) showDiploma();
 }
 
 const BADGE = {
@@ -984,30 +1291,86 @@ function renderQuestion(q){
   if(q.type==="open") return renderOpen(q);
 }
 
-function build(){
-  const list = document.getElementById("qlist");
-  const legend = document.getElementById("topicLegend");
+function renderPicker(){
+  const grid = document.getElementById("pickerGrid");
+  grid.innerHTML = "";
+  Object.keys(SUBJECTS).forEach(key=>{
+    const meta = SUBJECTS[key];
+    const count = QUESTIONS_ALL.filter(q=>q.subject===key).length;
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "subjectcard";
+    card.style.setProperty("--chip", "var(--"+meta.chip+")");
+    card.style.setProperty("--chip-soft", "var(--"+meta.chip+"-soft)");
+    card.innerHTML = `
+      <div class="sc-icon">${meta.icon}</div>
+      <h3>${meta.title}</h3>
+      <p>${meta.blurb}</p>
+      <span class="sc-count">${count} preguntas</span>
+    `;
+    card.addEventListener("click", ()=>startSubject(key));
+    grid.appendChild(card);
+  });
+}
 
-  Object.keys(STATIONS).forEach(key=>{
-    const meta = STATIONS[key];
+function startSubject(key){
+  activeSubject = key;
+  const meta = SUBJECTS[key];
+  answeredSet.clear();
+
+  document.getElementById("pickerScreen").hidden = true;
+  document.getElementById("quizArea").hidden = false;
+  document.getElementById("progressPill").hidden = false;
+  document.getElementById("progressTrack").hidden = false;
+  document.getElementById("progMsg").hidden = false;
+  document.getElementById("diploma").hidden = true;
+
+  document.getElementById("brandSubtitle").innerHTML = meta.subtitle;
+  document.getElementById("heroTitle").textContent = meta.heroTitle;
+  document.getElementById("heroBlurb").innerHTML = meta.heroBlurb;
+  document.getElementById("diplomaSubject").textContent = meta.diplomaSubject;
+  document.getElementById("certTitle").textContent = meta.certTitle;
+
+  const list = document.getElementById("qlist");
+  list.innerHTML = "";
+  const legend = document.getElementById("topicLegend");
+  legend.innerHTML = "";
+
+  const stationKeys = [...new Set(QUESTIONS_ALL.filter(q=>q.subject===key).map(q=>q.station))];
+  stationKeys.forEach(sk=>{
+    const smeta = STATIONS[sk];
     const span = document.createElement("span");
-    span.innerHTML = `<span class="dot" style="background:var(--${meta.chip})"></span>${meta.label}`;
+    span.innerHTML = `<span class="dot" style="background:var(--${smeta.chip})"></span>${smeta.label}`;
     legend.appendChild(span);
   });
 
-  const shuffled = shuffle(QUESTIONS);
-  shuffled.forEach(q=>{
+  activeQuestions = shuffle(QUESTIONS_ALL.filter(q=>q.subject===key));
+  activeQuestions.forEach(q=>{
     list.appendChild(renderQuestion(q));
   });
 
   updateHeader();
+  window.scrollTo({top:0, behavior:"instant"});
 }
+
+function backToPicker(){
+  document.getElementById("quizArea").hidden = true;
+  document.getElementById("progressPill").hidden = true;
+  document.getElementById("progressTrack").hidden = true;
+  document.getElementById("progMsg").hidden = true;
+  document.getElementById("pickerScreen").hidden = false;
+  document.getElementById("brandSubtitle").textContent = "Elige tu materia";
+  window.scrollTo({top:0, behavior:"instant"});
+}
+
+document.getElementById("switchSubject").addEventListener("click", backToPicker);
+document.getElementById("switchSubjectDiploma").addEventListener("click", backToPicker);
 
 function showDiploma(){
   const dip = document.getElementById("diploma");
   if(!dip.hidden) return;
   dip.hidden = false;
-  document.getElementById("diplomaTotal").textContent = TOTAL_Q;
+  document.getElementById("diplomaTotal").textContent = activeQuestions.length;
   dip.scrollIntoView({behavior:"smooth", block:"center"});
   runConfetti();
 }
@@ -1046,5 +1409,5 @@ function runConfetti(){
   draw();
 }
 
-build();
+renderPicker();
 </script>
