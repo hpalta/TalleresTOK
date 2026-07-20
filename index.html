@@ -288,45 +288,98 @@ const STATIONS = {
     icon:`<svg viewBox="0 0 48 48"><path d="M14 8h20v6a10 10 0 0 1-20 0z" fill="none" stroke="var(--gold)" stroke-width="3"/><path d="M14 10H8a6 6 0 0 0 6 8" fill="none" stroke="var(--gold)" stroke-width="3"/><path d="M34 10h6a6 6 0 0 1-6 8" fill="none" stroke="var(--gold)" stroke-width="3"/><rect x="20" y="26" width="8" height="8" fill="var(--gold)"/><rect x="14" y="34" width="20" height="6" rx="2" fill="var(--gold)"/></svg>` }
 };
 
+/* Dashed gold line + dot = "this is exactly what the label refers to",
+   the same way the paper worksheets used arrows into a photo. */
+function leader(x1,y1,x2,y2){
+  return `<path d="M${x1},${y1} L${x2},${y2}" stroke="var(--gold)" stroke-width="2.5" stroke-dasharray="5 5" fill="none" opacity=".9"/><circle cx="${x1}" cy="${y1}" r="5" fill="var(--gold)"/>`;
+}
+
 function skeletonSVG(){
-  let ribs = ""; for(let i=0;i<4;i++){ ribs += `<line x1="${112-i*2}" y1="${118+i*14}" x2="${188+i*2}" y2="${118+i*14}" stroke="var(--bone)" stroke-width="3" opacity=".65"/>`; }
-  let spine = ""; for(let i=0;i<11;i++){ spine += `<rect x="144" y="${100+i*11}" width="12" height="8" rx="3" fill="var(--bone)"/>`; }
-  return `<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="150" cy="55" r="32" fill="none" stroke="var(--bone)" stroke-width="4"/>
-    <circle cx="140" cy="52" r="3" fill="var(--bone)"/><circle cx="160" cy="52" r="3" fill="var(--bone)"/>
-    <path d="M138 66q12 8 24 0" fill="none" stroke="var(--bone)" stroke-width="3" stroke-linecap="round"/>
-    <rect x="140" y="86" width="20" height="16" rx="6" fill="none" stroke="var(--bone)" stroke-width="4"/>
-    <rect x="104" y="102" width="92" height="94" rx="34" fill="none" stroke="var(--bone)" stroke-width="4"/>
+  let ribs = ""; for(let i=0;i<4;i++){
+    const y0 = 104+i*12;
+    ribs += `<path d="M150,${y0} Q123,${y0+3} 108,${y0+15}" fill="none" stroke="var(--bone)" stroke-width="3.5" stroke-linecap="round"/>`;
+    ribs += `<path d="M150,${y0} Q177,${y0+3} 192,${y0+15}" fill="none" stroke="var(--bone)" stroke-width="3.5" stroke-linecap="round"/>`;
+  }
+  let spine = ""; for(let i=0;i<8;i++){ spine += `<ellipse cx="150" cy="${150+i*14}" rx="7" ry="5" fill="var(--bone)"/>`; }
+  return `<svg viewBox="0 0 300 440" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="150" cy="55" r="30" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <ellipse cx="139" cy="53" rx="5" ry="7" fill="var(--bone)"/><ellipse cx="161" cy="53" rx="5" ry="7" fill="var(--bone)"/>
+    <path d="M138 75q12 9 24 0" fill="none" stroke="var(--bone)" stroke-width="3" stroke-linecap="round"/>
+    <rect x="141" y="84" width="18" height="14" rx="5" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <rect x="146" y="100" width="8" height="46" rx="3" fill="var(--bone)"/>
     ${ribs}${spine}
-    <polygon points="118,214 182,214 168,244 132,244" fill="none" stroke="var(--bone)" stroke-width="4"/>
-    <rect x="70" y="112" width="16" height="80" rx="8" fill="none" stroke="var(--bone)" stroke-width="4" transform="rotate(8 78 150)"/>
-    <rect x="214" y="112" width="16" height="80" rx="8" fill="none" stroke="var(--bone)" stroke-width="4" transform="rotate(-8 222 150)"/>
-    <rect x="128" y="246" width="18" height="86" rx="8" fill="none" stroke="var(--bone)" stroke-width="4"/>
-    <rect x="154" y="246" width="18" height="86" rx="8" fill="none" stroke="var(--bone)" stroke-width="4"/>
-    <rect x="126" y="334" width="20" height="54" rx="8" fill="none" stroke="var(--bone)" stroke-width="4"/>
-    <rect x="154" y="334" width="20" height="54" rx="8" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <path d="M122,258 L178,258 L170,290 Q150,304 130,290 Z" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <circle cx="88" cy="118" r="13" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <circle cx="212" cy="118" r="13" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <rect x="78" y="122" width="20" height="76" rx="9" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <rect x="202" y="122" width="20" height="76" rx="9" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <circle cx="88" cy="202" r="6" fill="none" stroke="var(--bone)" stroke-width="3"/>
+    <circle cx="212" cy="202" r="6" fill="none" stroke="var(--bone)" stroke-width="3"/>
+    <rect x="78" y="206" width="18" height="72" rx="8" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <rect x="204" y="206" width="18" height="72" rx="8" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <ellipse cx="87" cy="284" rx="13" ry="10" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <ellipse cx="213" cy="284" rx="13" ry="10" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <rect x="124" y="292" width="22" height="76" rx="10" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <rect x="154" y="292" width="22" height="76" rx="10" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <circle cx="135" cy="374" r="7" fill="none" stroke="var(--bone)" stroke-width="3"/>
+    <circle cx="165" cy="374" r="7" fill="none" stroke="var(--bone)" stroke-width="3"/>
+    <rect x="126" y="380" width="18" height="52" rx="8" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <rect x="156" y="380" width="18" height="52" rx="8" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <ellipse cx="128" cy="436" rx="20" ry="8" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <ellipse cx="172" cy="436" rx="20" ry="8" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    ${leader(150,24,150,6)}
+    ${leader(172,109,266,118)}
+    ${leader(150,220,266,220)}
+    ${leader(135,330,50,330)}
   </svg>`;
 }
+
 function armSVG(){
-  return `<svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="70" cy="46" r="18" fill="none" stroke="var(--bone)" stroke-width="6"/>
-    <rect x="60" y="60" width="24" height="100" rx="10" fill="none" stroke="var(--bone)" stroke-width="6"/>
-    <ellipse cx="52" cy="108" rx="24" ry="40" fill="var(--muscle)" opacity=".85"/>
-    <ellipse cx="94" cy="112" rx="12" ry="32" fill="var(--muscle)" opacity=".5"/>
-    <circle cx="72" cy="162" r="14" fill="none" stroke="var(--joint)" stroke-width="6"/>
-    <rect x="62" y="172" width="24" height="90" rx="10" fill="none" stroke="var(--bone)" stroke-width="6" transform="rotate(38 74 172)"/>
-    <line x1="72" y1="150" x2="72" y2="176" stroke="var(--ink-soft)" stroke-width="4" stroke-dasharray="2 4"/>
+  return `<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="70" cy="50" r="18" fill="none" stroke="var(--bone)" stroke-width="6"/>
+    <rect x="60" y="64" width="24" height="106" rx="10" fill="none" stroke="var(--bone)" stroke-width="6"/>
+    <path d="M56,85 Q28,120 52,158 Q68,168 80,150 Q66,120 60,85 Z" fill="var(--muscle)" opacity=".85"/>
+    <ellipse cx="99" cy="118" rx="10" ry="34" fill="var(--muscle)" opacity=".5"/>
+    <circle cx="72" cy="172" r="15" fill="none" stroke="var(--joint)" stroke-width="6"/>
+    <g transform="rotate(-40 72 172)">
+      <rect x="63" y="172" width="8" height="92" rx="4" fill="none" stroke="var(--bone)" stroke-width="4"/>
+      <rect x="75" y="172" width="8" height="92" rx="4" fill="none" stroke="var(--bone)" stroke-width="4"/>
+      <circle cx="73" cy="270" r="17" fill="none" stroke="var(--bone)" stroke-width="5"/>
+    </g>
+    <path d="M64,163 L80,163" stroke="var(--ink-soft)" stroke-width="4" stroke-linecap="round"/>
+    <path d="M64,181 L80,181" stroke="var(--ink-soft)" stroke-width="4" stroke-linecap="round"/>
+    ${leader(50,120,14,120)}
+    ${leader(101,118,252,100)}
+    ${leader(68,172,20,225)}
+    ${leader(85,180,235,230)}
   </svg>`;
 }
+
 function jointsSVG(){
-  return `<svg viewBox="0 0 300 140" xmlns="http://www.w3.org/2000/svg">
-    <g><rect x="20" y="60" width="60" height="16" rx="6" fill="none" stroke="var(--joint)" stroke-width="5"/>
-    <rect x="66" y="60" width="60" height="16" rx="6" fill="none" stroke="var(--joint)" stroke-width="5" transform="rotate(35 96 68)"/>
-    <circle cx="80" cy="68" r="9" fill="var(--card)" stroke="var(--joint)" stroke-width="4"/></g>
-    <g><circle cx="180" cy="55" r="30" fill="none" stroke="var(--bone)" stroke-width="5"/>
-    <polyline points="152,40 162,32 172,42 182,30 192,42 202,32 208,42" fill="none" stroke="var(--bone)" stroke-width="3"/></g>
-    <g><rect x="248" y="30" width="26" height="14" rx="4" fill="var(--bone)"/><rect x="248" y="50" width="26" height="14" rx="4" fill="var(--bone)"/>
-    <rect x="248" y="70" width="26" height="14" rx="4" fill="var(--bone)"/><rect x="248" y="90" width="26" height="14" rx="4" fill="var(--bone)"/></g>
+  return `<svg viewBox="0 0 320 175" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="35" cy="45" r="11" fill="none" stroke="var(--joint)" stroke-width="4"/>
+    <rect x="27" y="54" width="16" height="42" rx="7" fill="none" stroke="var(--joint)" stroke-width="4"/>
+    <circle cx="48" cy="98" r="8" fill="var(--card)" stroke="var(--joint)" stroke-width="4"/>
+    <g transform="rotate(38 48 98)">
+      <rect x="40" y="98" width="16" height="46" rx="7" fill="none" stroke="var(--joint)" stroke-width="4"/>
+      <circle cx="48" cy="150" r="9" fill="none" stroke="var(--joint)" stroke-width="4"/>
+    </g>
+    ${leader(48,98,48,150)}
+
+    <circle cx="165" cy="62" r="28" fill="none" stroke="var(--bone)" stroke-width="4"/>
+    <ellipse cx="156" cy="59" rx="4" ry="6" fill="var(--bone)"/><ellipse cx="174" cy="59" rx="4" ry="6" fill="var(--bone)"/>
+    <path d="M155,80q10,7 20,0" fill="none" stroke="var(--bone)" stroke-width="2.5" stroke-linecap="round"/>
+    <polyline points="140,42 149,34 157,44 165,32 173,44 181,34 190,42" fill="none" stroke="var(--bone)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    ${leader(165,33,165,8)}
+
+    <rect x="256" y="24" width="28" height="16" rx="5" fill="none" stroke="var(--bone)" stroke-width="3.5"/>
+    <rect x="253" y="42" width="6" height="10" fill="var(--joint)" opacity=".8"/><rect x="281" y="42" width="6" height="10" fill="var(--joint)" opacity=".8"/>
+    <rect x="256" y="54" width="28" height="16" rx="5" fill="none" stroke="var(--bone)" stroke-width="3.5"/>
+    <rect x="253" y="72" width="6" height="10" fill="var(--joint)" opacity=".8"/><rect x="281" y="72" width="6" height="10" fill="var(--joint)" opacity=".8"/>
+    <rect x="256" y="84" width="28" height="16" rx="5" fill="none" stroke="var(--bone)" stroke-width="3.5"/>
+    <rect x="253" y="102" width="6" height="10" fill="var(--joint)" opacity=".8"/><rect x="281" y="102" width="6" height="10" fill="var(--joint)" opacity=".8"/>
+    <rect x="256" y="114" width="28" height="16" rx="5" fill="none" stroke="var(--bone)" stroke-width="3.5"/>
+    ${leader(257,77,270,150)}
   </svg>`;
 }
 
@@ -358,8 +411,8 @@ const QUESTIONS = [
 
 {id:"h6", station:"huesos", type:"label",
  prompt:"Este explorador dibujó un esqueleto en su cuaderno pero olvidó los nombres. Coloca cada palabra donde corresponde.",
- svg:skeletonSVG(),
- slots:[{id:"craneo", x:50, y:14, correct:"Cráneo"},{id:"costillas", x:26, y:38, correct:"Costillas"},{id:"columna", x:74, y:32, correct:"Columna vertebral"},{id:"femur", x:44, y:78, correct:"Fémur"}],
+ svg:skeletonSVG(), aspect:"300/440",
+ slots:[{id:"craneo", x:50, y:1.5, correct:"Cráneo"},{id:"costillas", x:88.5, y:27, correct:"Costillas"},{id:"columna", x:88.5, y:50, correct:"Columna vertebral"},{id:"femur", x:16.5, y:75, correct:"Fémur"}],
  bank:["Cráneo","Costillas","Columna vertebral","Fémur","Corazón","Pulmón"],
  explain:"El cráneo protege el cerebro, las costillas protegen órganos del pecho, la columna sostiene la espalda y el fémur es el hueso largo de la pierna."},
 
@@ -415,8 +468,8 @@ const QUESTIONS = [
 
 {id:"a6", station:"articulaciones", type:"label",
  prompt:"Un colega dibujó tres tipos de articulaciones en su cuaderno de campo. Etiqueta cada dibujo.",
- svg:jointsSVG(),
- slots:[{id:"movil", x:16, y:76, correct:"Articulación móvil"},{id:"fija", x:60, y:26, correct:"Articulación fija"},{id:"semimovil", x:87, y:76, correct:"Articulación semimóvil"}],
+ svg:jointsSVG(), aspect:"320/175",
+ slots:[{id:"movil", x:15, y:86, correct:"Articulación móvil"},{id:"fija", x:51.5, y:5, correct:"Articulación fija"},{id:"semimovil", x:84.5, y:86, correct:"Articulación semimóvil"}],
  bank:["Articulación móvil","Articulación fija","Articulación semimóvil","Articulación imaginaria"],
  explain:"El codo dobla en muchas direcciones (móvil), el cráneo casi no se mueve (fija) y la columna se mueve poquito, vértebra por vértebra (semimóvil)."},
 
@@ -467,8 +520,8 @@ const QUESTIONS = [
 
 {id:"m7", station:"musculos", type:"label",
  prompt:"Este es el brazo de Camilo doblándose. Etiqueta sus partes.",
- svg:armSVG(),
- slots:[{id:"biceps", x:18, y:44, correct:"Bíceps"},{id:"triceps", x:36, y:46, correct:"Tríceps"},{id:"tendon", x:26, y:64, correct:"Tendón"},{id:"codo", x:26, y:70, correct:"Articulación del codo"}],
+ svg:armSVG(), aspect:"300/300",
+ slots:[{id:"biceps", x:4.5, y:40, correct:"Bíceps"},{id:"triceps", x:84, y:33, correct:"Tríceps"},{id:"tendon", x:6.5, y:75, correct:"Tendón"},{id:"codo", x:78, y:77, correct:"Articulación del codo"}],
  bank:["Bíceps","Tríceps","Tendón","Articulación del codo","Pulmón"],
  explain:"El bíceps y el tríceps son el par de músculos del brazo; el tendón los une al hueso, y la articulación del codo permite el movimiento."},
 
@@ -832,6 +885,7 @@ function renderLabel(q){
 
   const stage = document.createElement("div");
   stage.className = "labelstage";
+  if(q.aspect) stage.style.aspectRatio = q.aspect;
   stage.innerHTML = q.svg;
   card.appendChild(stage);
 
